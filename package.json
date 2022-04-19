@@ -1,0 +1,19 @@
+{
+  "name": "rune-games-cli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:rune/rune-games-cli.git",
+  "author": "Helios1138 <revan.den@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ink": "^3.2.0",
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.25",
+    "@types/react": "^18.0.5",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  }
+}

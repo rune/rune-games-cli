@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "jsx": "react",
+    "types": ["node"],
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
