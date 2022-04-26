@@ -1,16 +1,39 @@
+#!/usr/bin/env node
+
 import React, { useEffect, useMemo } from "react"
 import { render, Text } from "ink"
 import getPort from "get-port"
 
 import express from "express"
-import fs from "fs"
-import path from "path"
-import url from "url"
+import meow from "meow"
+import { packageJson } from "./packageJson.js"
 
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const cli = meow(
+  `
+	Usage
+	  $ foo <game url or path>
 
-console.log({ __filename, __dirname, url: import.meta.url })
+	Options
+	  --https, -s   Use https
+
+	Examples
+	  $ foo unicorns --rainbow
+	  🌈 unicorns 🌈
+`,
+  {
+    importMeta: import.meta,
+    flags: {
+      rainbow: {
+        type: "number",
+        alias: "r",
+      },
+    },
+  }
+)
+
+console.log([cli.input, cli.flags.rainbow])
+
+// cli.showVersion()
 
 getPort()
   .then((port) => {
@@ -19,10 +42,6 @@ getPort()
   .catch((err) => {
     console.log("error", err)
   })
-
-const packageJson = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8")
-)
 
 // const app = express()
 // const port = 3000
@@ -65,11 +84,11 @@ const Counter = () => {
 
   useEffect(() => {
     appServer.get("/data", (_, res) => {
-      // todo: remove
+      // todo: remove?
       res.setHeader("Access-Control-Allow-Origin", "*")
       res.json({
         cliVersion: packageJson.version,
-        gameUrl: "https://games-launchpad.rune.ai/13/16/",
+        gameUrl: "http://localhost:3002",
       })
     })
     appServer.use(

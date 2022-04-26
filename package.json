@@ -5,17 +5,22 @@
   "repository": "git@github.com:rune/rune-games-cli.git",
   "author": "Helios1138 <revan.den@gmail.com>",
   "license": "MIT",
+  "bin": {
+    "rune": "./dist/index.js"
+  },
   "engines": {
     "node": ">=14.16"
   },
   "scripts": {
     "start": "ts-node --esm src",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc && chmod +x dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "express": "^4.17.3",
     "get-port": "^6.1.2",
     "ink": "^3.2.0",
+    "meow": "^10.1.2",
     "react": "^18.0.0"
   },
   "devDependencies": {
