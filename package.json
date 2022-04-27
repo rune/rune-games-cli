@@ -15,12 +15,19 @@
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "buildWrapper": "rm -rf src/wrapper && cd ../TinCan && CLI=1 yarn web:build && cp -r app/web/build ../rune-games-cli/src/wrapper && cd ../rune-games-cli && git add --all src/wrapper",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --ext .js,.ts,.tsx"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.25",
     "@types/react": "^18.0.5",
+    "@typescript-eslint/eslint-plugin": "4.31.0",
+    "@typescript-eslint/parser": "4.31.0",
+    "eslint": "7.22.0",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-node": "11.1.0",
     "express": "^4.18.0",
     "get-port": "^6.1.2",
     "ink": "^3.2.0",
@@ -29,6 +36,6 @@
     "react": "^18.0.0",
     "rune-games-sdk": "^1.4.8",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "typescript": "4.4.2"
   }
 }

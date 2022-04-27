@@ -1,10 +1,11 @@
-import getPort from "get-port"
 import express from "express"
-import { packageJson } from "./packageJson.js"
-import React, { useState, useEffect } from "react"
+import getPort from "get-port"
 import { Text, useInput } from "ink"
 import path from "path"
+import React, { useState, useEffect } from "react"
+
 import { detectLocalIP } from "./detectLocalIP.js"
+import { packageJson } from "./packageJson.js"
 
 const localIp = detectLocalIP()
 
@@ -35,8 +36,9 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
     if (input === "q") process.exit()
   })
 
-  if (!gameUrlOrPath)
+  if (!gameUrlOrPath) {
     return <Text color="red">Game URL or path is not set</Text>
+  }
 
   return (
     <>
@@ -77,7 +79,7 @@ function useAppServer({ gameUrl }: { gameUrl?: string }) {
       appServer.get("/data", (_, res) => {
         res.json({
           cliVersion: packageJson.version,
-          gameUrl: gameUrl,
+          gameUrl,
         })
       })
 

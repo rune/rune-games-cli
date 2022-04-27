@@ -1,6 +1,7 @@
 import { Text } from "ink"
-import React from "react"
 import meow from "meow"
+import React from "react"
+
 import { Start } from "./Start.js"
 
 const cli = meow(
