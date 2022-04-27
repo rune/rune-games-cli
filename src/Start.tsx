@@ -6,6 +6,7 @@ import path from "path"
 import React, { useState, useEffect } from "react"
 
 import { detectLocalIP } from "./detectLocalIP.js"
+import { __dirname } from "./helpers.js"
 import { packageJson } from "./packageJson.js"
 
 // @ts-ignore
@@ -59,10 +60,10 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
         flexDirection="column"
       >
         <Text color="green">
+          <Spinner type="line" />{" "}
           {urls.length > 0
             ? `App is available at ${urls.join(", ")}`
-            : "App server is starting"}{" "}
-          <Spinner type="earth" />
+            : "App server is starting"}
         </Text>
         <Box height={1} />
         <Box>
@@ -76,7 +77,7 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
   )
 }
 
-const wrapperDir = new URL("wrapper", import.meta.url).pathname
+const wrapperDir = path.resolve(__dirname, "../wrapper")
 
 function useAppServer({ gameUrl }: { gameUrl?: string }) {
   const [port, setPort] = useState<number | null>(null)

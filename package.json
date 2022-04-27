@@ -15,7 +15,7 @@
     "prepare": "husky install",
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
-    "buildWrapper": "rm -rf src/wrapper && cd ../TinCan && CLI=1 yarn web:build && cp -r app/web/build ../rune-games-cli/src/wrapper && cd ../rune-games-cli && git add --all src/wrapper",
+    "buildWrapper": "rm -rf wrapper && cd ../TinCan && CLI=1 yarn web:build && cp -r app/web/build ../rune-games-cli/wrapper && cd ../rune-games-cli && git add --all wrapper",
     "prepublishOnly": "npm run build",
     "lint": "eslint . --ext .ts,.tsx"
   },
