@@ -4,6 +4,9 @@ import { packageJson } from "./packageJson.js"
 import React, { useState, useEffect } from "react"
 import { Text, useInput } from "ink"
 import path from "path"
+import { detectLocalIP } from "./detectLocalIP.js"
+
+const localIp = detectLocalIP()
 
 export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
   const type = gameUrlOrPath
@@ -39,17 +42,21 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
     <>
       <Text color="green">
         {appServer
-          ? `App is running on http://localhost:${appServer.port}`
-          : "App is starting"}
+          ? `App is available at http://localhost:${appServer.port}${
+              localIp && ` (http://${localIp}:${appServer.port})`
+            }`
+          : "App server is starting"}
       </Text>
       {type === "path" ? (
         <Text color="green">
           {gameServer
-            ? `Game is running on http://localhost:${gameServer.port}`
-            : "Game is starting"}
+            ? `Game is available at http://localhost:${gameServer.port}${
+                localIp && ` (http://${localIp}:${gameServer.port})`
+              }`
+            : "Game server is starting"}
         </Text>
       ) : (
-        <Text color="green">Game is from {gameUrlOrPath}</Text>
+        <Text color="green">Game is available at {gameUrlOrPath}</Text>
       )}
       <Text color="yellow">Press `q` to exit</Text>
     </>
