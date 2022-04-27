@@ -56,7 +56,7 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
   )
 }
 
-const wrapperDir = new URL("../wrapper", import.meta.url).pathname
+const wrapperDir = new URL("wrapper", import.meta.url).pathname
 
 function useAppServer({ gameUrl }: { gameUrl?: string }) {
   const [port, setPort] = useState<number | null>(null)
