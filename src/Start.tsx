@@ -1,11 +1,15 @@
 import express from "express"
 import getPort from "get-port"
-import { Text, useInput } from "ink"
+import { Text, useInput, Box, Spacer } from "ink"
+import SpinnerImport from "ink-spinner"
 import path from "path"
 import React, { useState, useEffect } from "react"
 
 import { detectLocalIP } from "./detectLocalIP.js"
 import { packageJson } from "./packageJson.js"
+
+// @ts-ignore
+const Spinner: typeof SpinnerImport = SpinnerImport.default
 
 const localIp = detectLocalIP()
 
@@ -40,28 +44,35 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
     return <Text color="red">Game URL or path is not set</Text>
   }
 
+  const urls = []
+
+  if (appServer) urls.push(`http://localhost:${appServer.port}`)
+  if (appServer && localIp) urls.push(`http://${localIp}:${appServer.port}`)
+
   return (
-    <>
-      <Text color="green">
-        {appServer
-          ? `App is available at http://localhost:${appServer.port}${
-              localIp && ` (http://${localIp}:${appServer.port})`
-            }`
-          : "App server is starting"}
-      </Text>
-      {type === "path" ? (
+    <Box>
+      <Box
+        paddingX={4}
+        paddingY={1}
+        borderStyle="round"
+        borderColor="green"
+        flexDirection="column"
+      >
         <Text color="green">
-          {gameServer
-            ? `Game is available at http://localhost:${gameServer.port}${
-                localIp && ` (http://${localIp}:${gameServer.port})`
-              }`
-            : "Game server is starting"}
+          {urls.length > 0
+            ? `App is available at ${urls.join(", ")}`
+            : "App server is starting"}{" "}
+          <Spinner type="earth" />
         </Text>
-      ) : (
-        <Text color="green">Game is available at {gameUrlOrPath}</Text>
-      )}
-      <Text color="yellow">Press `q` to exit</Text>
-    </>
+        <Box height={1} />
+        <Box>
+          <Text color="yellow">Press `q` to exit</Text>
+          <Spacer />
+          <Text>Version {packageJson.version}</Text>
+        </Box>
+      </Box>
+      <Spacer />
+    </Box>
   )
 }
 
