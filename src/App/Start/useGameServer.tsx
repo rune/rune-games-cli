@@ -7,18 +7,16 @@ export function useGameServer({ gamePath }: { gamePath?: string }) {
   const [port, setPort] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!gamePath) return
+    if (!gamePath || port) return
 
     getPort({ port: 3001 }).then((freePort) => {
       const gameServer = express()
 
       gameServer.use("/", express.static(path.resolve(gamePath)))
 
-      gameServer.listen(freePort, () => {
-        setPort(freePort)
-      })
+      gameServer.listen(freePort, () => setPort(freePort))
     })
-  }, [gamePath])
+  }, [gamePath, port])
 
   return port ? { port } : null
 }

@@ -12,7 +12,7 @@ export function useAppServer({ gameUrl }: { gameUrl?: string }) {
   const [port, setPort] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!gameUrl) return
+    if (!gameUrl || port) return
 
     getPort({ port: 3000 }).then((freePort) => {
       const appServer = express()
@@ -25,14 +25,14 @@ export function useAppServer({ gameUrl }: { gameUrl?: string }) {
       })
 
       appServer.use("/", express.static(wrapperDir))
+
       appServer.use("*", (_, res) => {
         res.sendFile(path.resolve(wrapperDir, "index.html"))
       })
-      appServer.listen(freePort, () => {
-        setPort(freePort)
-      })
+
+      appServer.listen(freePort, () => setPort(freePort))
     })
-  }, [gameUrl])
+  }, [gameUrl, port])
 
   return port ? { port } : null
 }
