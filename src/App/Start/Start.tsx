@@ -1,5 +1,5 @@
 import { Text, useInput, Box, Spacer } from "ink"
-import React, { useEffect } from "react"
+import React from "react"
 
 import { ErrorText } from "../../components/ErrorText.js"
 import { detectLocalIP } from "../../lib/detectLocalIP.js"
@@ -24,14 +24,10 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
     gameUrl:
       type === "url"
         ? gameUrlOrPath
-        : gameServer
+        : type === "path" && gameServer
         ? `http://localhost:${gameServer.port}`
         : undefined,
   })
-
-  useEffect(() => {
-    if (type === null) process.exit(0)
-  }, [type])
 
   useInput((input) => {
     if (input === "q") process.exit()
