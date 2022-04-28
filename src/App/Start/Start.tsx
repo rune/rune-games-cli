@@ -4,12 +4,15 @@ import React from "react"
 import { ErrorText } from "../../components/ErrorText.js"
 import { packageJson } from "../../lib/packageJson.js"
 import { useExitKey } from "../../lib/useExitKey.js"
+import { cli } from "../cli.js"
 
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
 import { useLocalUrls } from "./useLocalUrls.js"
 
-export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
+export function Start() {
+  const gameUrlOrPath = cli.input[1]
+
   useExitKey()
 
   const type = gameUrlOrPath

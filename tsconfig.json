@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
     "strict": true,
     "noImplicitAny": true,
     "jsx": "react",
