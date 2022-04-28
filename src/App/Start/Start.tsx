@@ -1,9 +1,10 @@
-import { Text, useInput, Box, Spacer } from "ink"
+import { Text, Box, Spacer } from "ink"
 import React from "react"
 
 import { ErrorText } from "../../components/ErrorText.js"
 import { detectLocalIP } from "../../lib/detectLocalIP.js"
 import { packageJson } from "../../lib/packageJson.js"
+import { useExitKey } from "../lib/useExitKey.js"
 
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
@@ -11,6 +12,8 @@ import { useGameServer } from "./useGameServer.js"
 const localIp = detectLocalIP()
 
 export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
+  useExitKey()
+
   const type = gameUrlOrPath
     ? gameUrlOrPath.startsWith("http")
       ? "url"
@@ -27,10 +30,6 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
         : type === "path" && gameServer
         ? `http://localhost:${gameServer.port}`
         : undefined,
-  })
-
-  useInput((input) => {
-    if (input === "q") process.exit()
   })
 
   if (!gameUrlOrPath) {
@@ -51,11 +50,11 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
         borderColor="green"
         flexDirection="column"
       >
-        <Text color="green">
-          {urls.length > 0
-            ? `App is available at ${urls.join(", ")}`
-            : "App server is starting"}
-        </Text>
+        {urls.length > 0 ? (
+          <Text color="green">App is available at {urls.join(", ")}</Text>
+        ) : (
+          <Text color="yellow">App is starting...</Text>
+        )}
         <Box height={1} />
         <Box>
           <Text color="yellow">Press `q` to exit</Text>
