@@ -31,7 +31,7 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
 
   useEffect(() => {
     if (type === null) process.exit(0)
-  }, [])
+  }, [type])
 
   useInput((input) => {
     if (input === "q") process.exit()

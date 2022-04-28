@@ -4,13 +4,13 @@
     "es6": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": ["eslint:recommended", "prettier", "plugin:react/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 2019
   },
-  "plugins": ["@typescript-eslint", "node", "import"],
+  "plugins": ["@typescript-eslint", "node", "import", "react", "react-hooks"],
   "rules": {
     "max-lines": ["warn", 2000],
     // the no-unused-vars base rule must be disabled when using @typescript-eslint/no-unused-vars
@@ -21,6 +21,9 @@
     "node/no-unsupported-features/es-builtins": ["error"],
     "node/no-unsupported-features/es-syntax": ["off"],
     "node/no-unsupported-features/node-builtins": ["error"],
+
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
 
     "no-else-return": ["error", { "allowElseIf": false }],
     "object-shorthand": ["error", "properties"],

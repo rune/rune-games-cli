@@ -11,5 +11,5 @@ export const App = () => {
   if (!command) return <ErrorText>No command specified</ErrorText>
   if (command === "start") return <Start gameUrlOrPath={cli.input[1]} />
 
-  return <ErrorText showHelp>Invalid command '{command}'</ErrorText>
+  return <ErrorText showHelp>Invalid command `{command}`</ErrorText>
 }
