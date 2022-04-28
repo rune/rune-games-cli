@@ -16,7 +16,8 @@
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "prepublishOnly": "npm run build",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/express": "4.17.13",
