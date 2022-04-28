@@ -15,7 +15,6 @@
     "prepare": "husky install",
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
-    "buildWrapper": "rm -rf wrapper && cd ../TinCan && CLI=1 yarn web:build && cp -r app/web/build ../rune-games-cli/wrapper && cd ../rune-games-cli && git add --all wrapper",
     "prepublishOnly": "npm run build",
     "lint": "eslint . --ext .ts,.tsx"
   },
@@ -39,7 +38,6 @@
     "meow": "10.1.2",
     "prettier": "2.6.2",
     "react": "18.0.0",
-    "rune-games-sdk": "1.4.8",
     "semver": "7.3.2",
     "ts-node": "10.7.0",
     "typescript": "4.4.2"

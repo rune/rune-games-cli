@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 import { packageJson } from "../../lib/packageJson.js"
 import { rootPath } from "../../lib/rootPath.js"
 
-const wrapperDir = path.resolve(rootPath, "wrapper")
+const appDir = path.resolve(rootPath, "app")
 
 export function useAppServer({ gameUrl }: { gameUrl?: string }) {
   const [port, setPort] = useState<number | null>(null)
@@ -24,10 +24,10 @@ export function useAppServer({ gameUrl }: { gameUrl?: string }) {
         })
       })
 
-      appServer.use("/", express.static(wrapperDir))
+      appServer.use("/", express.static(appDir))
 
       appServer.use("*", (_, res) => {
-        res.sendFile(path.resolve(wrapperDir, "index.html"))
+        res.sendFile(path.resolve(appDir, "index.html"))
       })
 
       appServer.listen(freePort, () => setPort(freePort))

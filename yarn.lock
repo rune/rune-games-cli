@@ -2302,11 +2302,6 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rune-games-sdk@1.4.8:
-  version "1.4.8"
-  resolved "https://registry.yarnpkg.com/rune-games-sdk/-/rune-games-sdk-1.4.8.tgz#d84ca374c59d85e983556f4e2e294ae046cacc78"
-  integrity sha512-j442xEGQGo4opZNSTnNLjKS1MWAGcBW+x2Dkj3YbwxBCaxPg9q6xgbaNI4PTU5sGfTtYsqWjQ0g/EOCohL8Xcw==
-
 rxjs@^7.5.5:
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
