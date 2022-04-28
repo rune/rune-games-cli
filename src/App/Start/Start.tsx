@@ -2,14 +2,12 @@ import { Text, Box, Spacer } from "ink"
 import React from "react"
 
 import { ErrorText } from "../../components/ErrorText.js"
-import { detectLocalIP } from "../../lib/detectLocalIP.js"
 import { packageJson } from "../../lib/packageJson.js"
-import { useExitKey } from "../lib/useExitKey.js"
+import { useExitKey } from "../../lib/useExitKey.js"
 
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
-
-const localIp = detectLocalIP()
+import { useLocalUrls } from "./useLocalUrls.js"
 
 export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
   useExitKey()
@@ -32,14 +30,11 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
         : undefined,
   })
 
+  const appUrls = useLocalUrls(appServer?.port)
+
   if (!gameUrlOrPath) {
     return <ErrorText showHelp>Game URL or path was not provided</ErrorText>
   }
-
-  const urls = []
-
-  if (appServer) urls.push(`http://localhost:${appServer.port}`)
-  if (appServer && localIp) urls.push(`http://${localIp}:${appServer.port}`)
 
   return (
     <Box>
@@ -50,14 +45,15 @@ export function Start({ gameUrlOrPath }: { gameUrlOrPath?: string }) {
         borderColor="green"
         flexDirection="column"
       >
-        {urls.length > 0 ? (
-          <Text color="green">App is available at {urls.join(", ")}</Text>
+        {appUrls.length > 0 ? (
+          <Text color="green">App is available at {appUrls.join(", ")}</Text>
         ) : (
           <Text color="yellow">App is starting...</Text>
         )}
         <Box height={1} />
         <Box>
           <Text color="yellow">Press `q` to exit</Text>
+          <Box width={1} />
           <Spacer />
           <Text>Version {packageJson.version}</Text>
         </Box>
