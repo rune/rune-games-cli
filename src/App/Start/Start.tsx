@@ -69,7 +69,7 @@ export function Start() {
               </Text>
               :{" "}
               <UncontrolledTextInput
-                placeholder="URL or path"
+                placeholder="Enter URL or path"
                 onSubmit={setGameUrlOrPath}
               />
             </Text>
