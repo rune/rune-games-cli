@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "repository": "git@github.com:rune/rune-games-cli.git",
-  "author": "Helios1138 <revan.den@gmail.com>",
+  "author": "Rune AI Inc.",
   "license": "MIT",
   "bin": {
     "rune": "./dist/index.js"
