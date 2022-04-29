@@ -1,24 +1,30 @@
+import fs from "fs"
 import { Text, Box, Spacer } from "ink"
-import React from "react"
+import path from "path"
+import React, { useState } from "react"
 
-import { ErrorText } from "../../components/ErrorText.js"
 import { packageJson } from "../../lib/packageJson.js"
 import { useExitKey } from "../../lib/useExitKey.js"
 import { cli } from "../cli.js"
 
+import { Prompt } from "./Prompt.js"
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
 import { useLocalUrls } from "./useLocalUrls.js"
 
 export function Start() {
-  const gameUrlOrPath = cli.input[1]
+  const [gameUrlOrPath, setGameUrlOrPath] = useState(cli.input[1])
 
+  // todo: only when server is running, not input
+  //  probably just split this into two components
   useExitKey()
 
   const type = gameUrlOrPath
-    ? gameUrlOrPath.startsWith("http")
+    ? gameUrlOrPath.match(/^https?:\/\//)
       ? "url"
-      : "path"
+      : fs.existsSync(path.resolve(gameUrlOrPath))
+      ? "path"
+      : null
     : null
 
   const gameServer = useGameServer({
@@ -35,8 +41,32 @@ export function Start() {
 
   const appUrls = useLocalUrls(appServer?.port)
 
-  if (!gameUrlOrPath) {
-    return <ErrorText showHelp>Game URL or path was not provided</ErrorText>
+  if (!type) {
+    return (
+      <Box>
+        <Box
+          paddingX={4}
+          paddingY={1}
+          borderStyle="round"
+          borderColor="yellow"
+          flexDirection="column"
+        >
+          {!!gameUrlOrPath && (
+            <>
+              <Text color="red">
+                Invalid game URL or path `{gameUrlOrPath}`
+              </Text>
+              <Box height={1} />
+            </>
+          )}
+          <Prompt
+            prompt="Enter the game URL or path"
+            onSubmit={setGameUrlOrPath}
+          />
+        </Box>
+        <Spacer />
+      </Box>
+    )
   }
 
   return (
@@ -53,9 +83,10 @@ export function Start() {
         ) : (
           <Text color="yellow">App is starting...</Text>
         )}
+        <Text color="green">Game: {gameUrlOrPath}</Text>
         <Box height={1} />
         <Box>
-          <Text color="yellow">Press `q` to exit</Text>
+          <Text>Press `q` to exit</Text>
           <Box width={1} />
           <Spacer />
           <Text>Version {packageJson.version}</Text>
