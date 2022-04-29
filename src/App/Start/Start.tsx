@@ -1,13 +1,13 @@
 import fs from "fs"
 import { Text, Box, Spacer } from "ink"
+import { UncontrolledTextInput } from "ink-text-input"
 import path from "path"
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 
 import { packageJson } from "../../lib/packageJson.js"
 import { useExitKey } from "../../lib/useExitKey.js"
 import { cli } from "../cli.js"
 
-import { Prompt } from "./Prompt.js"
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
 import { useLocalUrls } from "./useLocalUrls.js"
@@ -15,59 +15,35 @@ import { useLocalUrls } from "./useLocalUrls.js"
 export function Start() {
   const [gameUrlOrPath, setGameUrlOrPath] = useState(cli.input[1])
 
-  // todo: only when server is running, not input
-  //  probably just split this into two components
-  useExitKey()
+  const gameType = useMemo(
+    () =>
+      gameUrlOrPath
+        ? gameUrlOrPath.match(/^https?:\/\//)
+          ? "url"
+          : fs.existsSync(path.resolve(gameUrlOrPath))
+          ? "path"
+          : null
+        : null,
+    [gameUrlOrPath]
+  )
+  const ready = gameType !== null
 
-  const type = gameUrlOrPath
-    ? gameUrlOrPath.match(/^https?:\/\//)
-      ? "url"
-      : fs.existsSync(path.resolve(gameUrlOrPath))
-      ? "path"
-      : null
-    : null
+  useExitKey(ready)
 
   const gameServer = useGameServer({
-    gamePath: type === "path" ? gameUrlOrPath : undefined,
+    gamePath: gameType === "path" ? gameUrlOrPath : undefined,
   })
+
   const appServer = useAppServer({
     gameUrl:
-      type === "url"
+      gameType === "url"
         ? gameUrlOrPath
-        : type === "path" && gameServer
+        : gameType === "path" && gameServer
         ? `http://localhost:${gameServer.port}`
         : undefined,
   })
 
   const appUrls = useLocalUrls(appServer?.port)
-
-  if (!type) {
-    return (
-      <Box>
-        <Box
-          paddingX={4}
-          paddingY={1}
-          borderStyle="round"
-          borderColor="yellow"
-          flexDirection="column"
-        >
-          {!!gameUrlOrPath && (
-            <>
-              <Text color="red">
-                Invalid game URL or path `{gameUrlOrPath}`
-              </Text>
-              <Box height={1} />
-            </>
-          )}
-          <Prompt
-            prompt="Enter the game URL or path"
-            onSubmit={setGameUrlOrPath}
-          />
-        </Box>
-        <Spacer />
-      </Box>
-    )
-  }
 
   return (
     <Box>
@@ -75,19 +51,44 @@ export function Start() {
         paddingX={4}
         paddingY={1}
         borderStyle="round"
-        borderColor="green"
+        borderColor={ready ? "green" : "yellow"}
         flexDirection="column"
       >
-        {appUrls.length > 0 ? (
-          <Text color="green">App is available at {appUrls.join(", ")}</Text>
+        {ready ? (
+          <>
+            <Text color="green">App is available at {appUrls.join(", ")}</Text>
+            <Text color="green">Game: {gameUrlOrPath}</Text>
+          </>
         ) : (
-          <Text color="yellow">App is starting...</Text>
+          <>
+            <Text color="yellow">
+              App will start once you enter the game URL or path
+            </Text>
+            <Text>
+              <Text underline color="yellow">
+                Game
+              </Text>
+              :{" "}
+              <UncontrolledTextInput
+                placeholder="URL or path"
+                onSubmit={setGameUrlOrPath}
+              />
+            </Text>
+            {gameUrlOrPath && (
+              <Text color="red">
+                Invalid URL or non-existent path `{gameUrlOrPath}`
+              </Text>
+            )}
+          </>
         )}
-        <Text color="green">Game: {gameUrlOrPath}</Text>
         <Box height={1} />
         <Box>
-          <Text>Press `q` to exit</Text>
-          <Box width={1} />
+          {ready && (
+            <>
+              <Text>Press `q` to exit</Text>
+              <Box width={1} />
+            </>
+          )}
           <Spacer />
           <Text>Version {packageJson.version}</Text>
         </Box>

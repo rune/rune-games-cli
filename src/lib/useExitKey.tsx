@@ -1,7 +1,10 @@
 import { useInput } from "ink"
 
-export function useExitKey() {
-  useInput((input) => {
-    if (input === "q") process.exit()
-  })
+export function useExitKey(active: boolean) {
+  useInput(
+    (input) => {
+      if (input === "q") process.exit()
+    },
+    { isActive: active }
+  )
 }
