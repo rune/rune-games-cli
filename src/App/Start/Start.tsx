@@ -5,9 +5,9 @@ import path from "path"
 import React, { useState, useMemo } from "react"
 
 import { packageJson } from "../../lib/packageJson.js"
-import { useExitKey } from "../../lib/useExitKey.js"
 import { cli } from "../cli.js"
 
+import { ExitKey } from "./ExitKey.js"
 import { useAppServer } from "./useAppServer.js"
 import { useGameServer } from "./useGameServer.js"
 import { useLocalUrls } from "./useLocalUrls.js"
@@ -27,8 +27,7 @@ export function Start() {
     [gameUrlOrPath]
   )
   const ready = gameType !== null
-
-  useExitKey(ready)
+  const error = !ready && !!gameUrlOrPath
 
   const gameServer = useGameServer({
     gamePath: gameType === "path" ? gameUrlOrPath : undefined,
@@ -50,8 +49,8 @@ export function Start() {
       <Box
         paddingX={4}
         paddingY={1}
-        borderStyle="round"
-        borderColor={ready ? "green" : "yellow"}
+        borderStyle="bold"
+        borderColor={ready ? "green" : error ? "red" : "yellow"}
         flexDirection="column"
       >
         {ready ? (
@@ -74,7 +73,7 @@ export function Start() {
                 onSubmit={setGameUrlOrPath}
               />
             </Text>
-            {gameUrlOrPath && (
+            {error && (
               <Text color="red">
                 Invalid URL or non-existent path `{gameUrlOrPath}`
               </Text>
@@ -85,12 +84,12 @@ export function Start() {
         <Box>
           {ready && (
             <>
-              <Text>Press `q` to exit</Text>
+              <ExitKey />
               <Box width={1} />
             </>
           )}
           <Spacer />
-          <Text>Version {packageJson.version}</Text>
+          <Text>Rune CLI v{packageJson.version}</Text>
         </Box>
       </Box>
       <Spacer />
