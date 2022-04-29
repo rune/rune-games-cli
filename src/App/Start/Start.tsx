@@ -49,7 +49,7 @@ export function Start() {
       <Box
         paddingX={4}
         paddingY={1}
-        borderStyle="bold"
+        borderStyle="round"
         borderColor={ready ? "green" : error ? "red" : "yellow"}
         flexDirection="column"
       >
