@@ -16,6 +16,7 @@
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "prepublishOnly": "npm run build",
+    "postpublish": "git tag v$npm_package_version && git push --tags",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit"
   },
