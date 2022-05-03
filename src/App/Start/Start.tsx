@@ -51,6 +51,26 @@ export function Start() {
     [gamePathOrUrl, gameType]
   )
 
+  if (!gamePathOrUrlValid) {
+    return (
+      <Box flexDirection="column">
+        <Text color="red">{fullGamePathOrUrl} is not a valid game path</Text>
+        <Text color="red">
+          A game path must be a directory containing an index.html file
+        </Text>
+        <Box height={1} />
+        <Text color="yellow">
+          <Text underline>Please enter the game path or URL</Text>
+          <Text>:</Text>
+        </Text>
+        <UncontrolledTextInput
+          placeholder="Game URL or path"
+          onSubmit={setGamePathOrUrl}
+        />
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <Box
@@ -60,37 +80,12 @@ export function Start() {
         borderColor={gamePathOrUrlValid ? "green" : "red"}
         flexDirection="column"
       >
-        {gamePathOrUrlValid ? (
-          <>
-            <Text color="green">App is available at {appUrls.join(", ")}</Text>
-            <Text color="green">Game: {fullGamePathOrUrl}</Text>
-          </>
-        ) : (
-          <>
-            <Text color="red">
-              {fullGamePathOrUrl} is not a valid game path
-            </Text>
-            <Text color="red">
-              A game path must be a directory containing an index.html file
-            </Text>
-            <Box height={1} />
-            <Text underline color="yellow">
-              Please enter the game path or URL
-            </Text>
-            <UncontrolledTextInput
-              placeholder="Enter URL or path"
-              onSubmit={setGamePathOrUrl}
-            />
-          </>
-        )}
+        <Text color="green">App is available at {appUrls.join(", ")}</Text>
+        <Text color="green">Game: {fullGamePathOrUrl}</Text>
         <Box height={1} />
         <Box>
-          {gamePathOrUrlValid && (
-            <>
-              <ExitKey />
-              <Box width={1} />
-            </>
-          )}
+          <ExitKey />
+          <Box width={1} />
           <Spacer />
           <Text>Rune CLI v{packageJson.version}</Text>
         </Box>
