@@ -30,7 +30,7 @@ You should see something like
 ```
 
 When you open this URL you should see your game running inside a mock Rune app.
-Press the 'gear' icon to open the settings. There you can e.g. change the game
+Press the ⚙️ icon to open the developer tools. There you can e.g. change the game
 challenge number.
 
 <img src="https://user-images.githubusercontent.com/7106681/166223264-81029004-c985-49e6-b486-1d134686354e.png" height="500" /> <img src="https://user-images.githubusercontent.com/7106681/166223386-1d04ba1d-bde7-40c8-a94b-b4d12b13249b.png" height="500" />
