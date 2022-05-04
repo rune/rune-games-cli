@@ -4,7 +4,6 @@
   "type": "module",
   "repository": "git@github.com:rune/rune-games-cli.git",
   "author": "Rune AI Inc.",
-  "license": "MIT",
   "bin": {
     "rune": "./dist/index.js"
   },
