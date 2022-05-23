@@ -21,7 +21,7 @@
     "prepare": "husky install",
     "cli": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "yarn build",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "release": "scripts/release.sh"
