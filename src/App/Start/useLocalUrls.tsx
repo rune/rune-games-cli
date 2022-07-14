@@ -3,11 +3,19 @@ import { detectLocalIP } from "../../lib/detectLocalIP.js"
 const localIp = detectLocalIP()
 
 export function useLocalUrls(port?: number) {
-  if (!port) return []
+  const urls: {
+    localhost: string | null
+    ip: string | null
+  } = {
+    localhost: null,
+    ip: null,
+  }
 
-  const urls = [`http://localhost:${port}`]
+  if (!port) return urls
 
-  if (localIp) urls.push(`http://${localIp}:${port}`)
+  urls.localhost = `http://localhost:${port}`
+
+  if (localIp) urls.ip = `http://${localIp}:${port}`
 
   return urls
 }

@@ -46,7 +46,7 @@ export function Start() {
       gameType === "path"
         ? path.relative(".", gamePathOrUrl) === ""
           ? "Current directory"
-          : `\`${path.resolve(gamePathOrUrl)}\``
+          : `${path.resolve(gamePathOrUrl)}`
         : gamePathOrUrl,
     [gamePathOrUrl, gameType]
   )
@@ -77,11 +77,14 @@ export function Start() {
         paddingX={4}
         paddingY={1}
         borderStyle="round"
-        borderColor={gamePathOrUrlValid ? "green" : "red"}
+        borderColor="green"
         flexDirection="column"
       >
-        <Text color="green">App is available at {appUrls.join(", ")}</Text>
-        <Text color="green">Game: {fullGamePathOrUrl}</Text>
+        <Text color="green">App:</Text>
+        <Text> Local: {appUrls.localhost}</Text>
+        {appUrls.ip && <Text> On your network: {appUrls.ip}</Text>}
+        <Text color="green">Game:</Text>
+        <Text> {fullGamePathOrUrl}</Text>
         <Box height={1} />
         <Box>
           <ExitKey />
