@@ -1,11 +1,8 @@
 import { Binary } from "bson"
 
-export interface Storage extends StorageObject {
+export interface Storage {
   lastRandomAppPort: number
   lastRandomGamePort: number
-}
-
-export interface StorageObject {
   [key: string]: StorageValue<string | number | boolean | null | Date | Binary>
 }
 

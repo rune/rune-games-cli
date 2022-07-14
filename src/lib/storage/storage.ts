@@ -1,29 +1,26 @@
 import { serialize, deserialize } from "bson"
 import fs from "fs"
-import os from "os"
-import path from "path"
+
+import { packageJson } from "../packageJson.js"
 
 import { Storage } from "./types.js"
-
-const dataDir = path.resolve(os.tmpdir(), "rune")
-fs.mkdirSync(dataDir, { recursive: true })
+import { valuePath } from "./valuePath.js"
 
 export const storage = {
   get<T extends keyof Storage>(key: T) {
     try {
-      return deserialize(fs.readFileSync(valueFile(key))).value as Storage[T]
+      return deserialize(fs.readFileSync(valuePath(key))).value as Storage[T]
     } catch (e) {
       return undefined
     }
   },
   set<T extends keyof Storage>(key: T, value: Storage[T]) {
-    fs.writeFileSync(valueFile(key), serialize({ value }))
+    fs.writeFileSync(
+      valuePath(key),
+      serialize({ value, version: packageJson.version })
+    )
   },
   delete(key: keyof Storage) {
-    fs.writeFileSync(valueFile(key), "")
+    fs.writeFileSync(valuePath(key), "")
   },
-}
-
-function valueFile(key: keyof Storage) {
-  return path.resolve(dataDir, `${key}.value`)
 }
