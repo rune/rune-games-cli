@@ -1,8 +1,8 @@
 import { Binary } from "bson"
 
 export interface Storage extends StorageObject {
-  lastAppServerPort: number
-  lastGameServerPort: number
+  lastRandomAppPort: number
+  lastRandomGamePort: number
 }
 
 export interface StorageObject {
