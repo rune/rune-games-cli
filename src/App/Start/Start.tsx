@@ -80,11 +80,26 @@ export function Start() {
         borderColor="green"
         flexDirection="column"
       >
-        <Text color="green">App:</Text>
-        <Text> Local: {appUrls.localhost}</Text>
-        {appUrls.ip && <Text> On your network: {appUrls.ip}</Text>}
-        <Text color="green">Game:</Text>
-        <Text> {fullGamePathOrUrl}</Text>
+        <Text>
+          <Text bold color="green">
+            Test locally
+          </Text>
+          : {appUrls.localhost}
+        </Text>
+        {appUrls.ip && (
+          <Text>
+            <Text bold color="green">
+              Test on your phone
+            </Text>
+            : {appUrls.ip} (same network only)
+          </Text>
+        )}
+        <Text>
+          <Text bold color="green">
+            Game
+          </Text>
+          : {fullGamePathOrUrl}
+        </Text>
         <Box height={1} />
         <Box>
           <ExitKey />
