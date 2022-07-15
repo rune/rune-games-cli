@@ -2,7 +2,7 @@ import { detectLocalIP } from "../../lib/detectLocalIP.js"
 
 const localIp = detectLocalIP()
 
-export function useLocalUrls(port?: number) {
+export function getLocalUrls(port?: number) {
   const urls: {
     localhost: string | null
     ip: string | null
