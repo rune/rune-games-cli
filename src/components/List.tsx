@@ -8,11 +8,12 @@ export function List() {
   const { me } = useMe()
   const { games } = useGames({ skip: !me, condition: { devTeamId: me?.id } })
 
+  if (!games?.length) return <Text>You have not submitted any games yet</Text>
+
   return (
     <Box flexDirection="column">
       <Text>Your games:</Text>
-      {!games?.length && <Text>You have not submitted any games yet</Text>}
-      {games?.map((game) => (
+      {games.map((game) => (
         <Text key={game.id}>- {game.title}</Text>
       ))}
     </Box>
