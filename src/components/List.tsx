@@ -1,4 +1,4 @@
-import { Text } from "ink"
+import { Text, Box } from "ink"
 import React from "react"
 
 import { useGames } from "../gql/useGames.js"
@@ -8,5 +8,13 @@ export function List() {
   const { me } = useMe()
   const { games } = useGames({ skip: !me, condition: { devTeamId: me?.id } })
 
-  return <Text>{JSON.stringify({ me, games })}</Text>
+  return (
+    <Box flexDirection="column">
+      <Text>Your games:</Text>
+      {!games?.length && <Text>You have not submitted any games yet</Text>}
+      {games?.map((game) => (
+        <Text key={game.id}>- {game.title}</Text>
+      ))}
+    </Box>
+  )
 }
