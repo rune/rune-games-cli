@@ -12,7 +12,7 @@ import { useCheckVerification } from "../gql/useCheckVerification.js"
 import { useMe } from "../gql/useMe.js"
 import { useStartVerification } from "../gql/useStartVerification.js"
 import { useUpdateDevTeamById } from "../gql/useUpdateDevTeamById.js"
-import { formatError } from "../lib/formatError.js"
+import { formatApolloError } from "../lib/formatApolloError.js"
 import { storage } from "../lib/storage/storage.js"
 
 import { Step } from "./Step.js"
@@ -133,7 +133,7 @@ export function LoginGate({ children }: { children?: ReactNode }) {
                 <Box flexDirection="column">
                   {startVerificationError && (
                     <Text color="red">
-                      {formatError(startVerificationError, {
+                      {formatApolloError(startVerificationError, {
                         "[tango][VERIFICATION_RATE_LIMIT]":
                           "It looks like you’ve already tried to verify this email recently, please wait a bit before trying again",
                         default: `Something went wrong`,
@@ -166,7 +166,7 @@ export function LoginGate({ children }: { children?: ReactNode }) {
                 status === "success"
                   ? "Email confirmed"
                   : checkVerificationError
-                  ? formatError(checkVerificationError, {
+                  ? formatApolloError(checkVerificationError, {
                       "[tango][JWT_EXPIRED]":
                         "It looks like the email link has expired, please try again",
                       default: `Something went wrong. Please try again`,
@@ -201,7 +201,7 @@ export function LoginGate({ children }: { children?: ReactNode }) {
               <Box flexDirection="column">
                 {updateDevTeamByIdError && (
                   <Text color="red">
-                    {formatError(updateDevTeamByIdError, {
+                    {formatApolloError(updateDevTeamByIdError, {
                       'violates check constraint "dev_team_handle_check"':
                         "Invalid input, try a different handle",
                       'violates unique constraint "dev_team_handle_key"':

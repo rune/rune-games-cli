@@ -1,6 +1,6 @@
 import { ApolloError } from "@apollo/client/index.js"
 
-export function formatError(
+export function formatApolloError(
   error: ApolloError,
   messages: { [key: string]: string; default: string }
 ) {
