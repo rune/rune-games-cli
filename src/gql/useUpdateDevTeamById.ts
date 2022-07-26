@@ -12,11 +12,12 @@ export function useUpdateDevTeamById() {
   return {
     updateDevTeamById: useCallback(
       (variables: UpdateDevTeamByIdMutationVariables) => {
-        mutate({ variables }).catch()
+        mutate({ variables }).catch(() => {})
       },
       [mutate]
     ),
     updateDevTeamByIdLoading: result.loading,
+    updateDevTeamByIdError: result.error,
   }
 }
 

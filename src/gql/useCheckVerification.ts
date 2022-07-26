@@ -12,7 +12,7 @@ export function useCheckVerification() {
   return {
     checkVerification: useCallback(
       (variables: CheckVerificationMutationVariables) => {
-        mutate({ variables }).catch()
+        mutate({ variables }).catch(() => {})
       },
       [mutate]
     ),

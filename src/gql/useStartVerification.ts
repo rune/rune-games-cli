@@ -12,7 +12,7 @@ export function useStartVerification() {
   return {
     startVerification: useCallback(
       (variables: StartVerificationMutationVariables) => {
-        mutate({ variables }).catch()
+        mutate({ variables }).catch(() => {})
       },
       [mutate]
     ),

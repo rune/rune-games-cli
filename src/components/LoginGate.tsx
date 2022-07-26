@@ -1,5 +1,4 @@
 import { Text, Box } from "ink"
-import SpinnerImport from "ink-spinner/build/index.js"
 import { UncontrolledTextInput } from "ink-text-input"
 import React, { ReactNode, useState, useEffect, useMemo } from "react"
 
@@ -9,10 +8,10 @@ import { useStartVerification } from "../gql/useStartVerification.js"
 import { useUpdateDevTeamById } from "../gql/useUpdateDevTeamById.js"
 import { storage } from "../lib/storage/storage.js"
 
-// @ts-ignore
-const Spinner = SpinnerImport.default as typeof SpinnerImport
+import { Step } from "./Step.js"
 
 const checkVerificationEvery = 2000
+const alreadyHasAuthToken = !!storage.get("authToken")
 
 export function LoginGate({ children }: { children?: ReactNode }) {
   const [authToken, setAuthToken] = useState(() => storage.get("authToken"))
@@ -26,7 +25,11 @@ export function LoginGate({ children }: { children?: ReactNode }) {
     checkVerificationLoading,
     authToken: newAuthToken,
   } = useCheckVerification()
-  const { updateDevTeamById, updateDevTeamByIdLoading } = useUpdateDevTeamById()
+  const {
+    updateDevTeamById,
+    updateDevTeamByIdLoading,
+    updateDevTeamByIdError,
+  } = useUpdateDevTeamById()
 
   const sanitizedEmail = useMemo(() => email.trim().toLowerCase(), [email])
 
@@ -62,13 +65,12 @@ export function LoginGate({ children }: { children?: ReactNode }) {
     }
   }, [me, newHandle, updateDevTeamById])
 
-  // todo: list steps + completed, use Static?
-
-  if (meLoading) {
+  if (alreadyHasAuthToken && meLoading) {
     return (
-      <Text>
-        Checking authorization <Spinner />
-      </Text>
+      <Step
+        status="waiting"
+        render={{ waiting: () => ({ label: "Checking authorization" }) }}
+      />
     )
   }
 
@@ -85,57 +87,97 @@ export function LoginGate({ children }: { children?: ReactNode }) {
     )
   }
 
-  if (me) {
-    return (
-      <Box flexDirection="column">
-        <Text>
-          It looks like you’re creating a dev account for the first time. Please
-          enter you handle
-        </Text>
-        {updateDevTeamByIdLoading ? (
-          <Text>
-            Setting the handle <Spinner />
-          </Text>
-        ) : (
-          <Box>
-            <Text>Handle: </Text>
-            <UncontrolledTextInput
-              placeholder="coolDev"
-              initialValue={newHandle}
-              onSubmit={setNewHandle}
-            />
-          </Box>
-        )}
-      </Box>
-    )
-  }
-
-  if (verificationToken && !authToken) {
-    return (
-      <Text>
-        An email was sent to `{email}`, click the link inside to proceed{" "}
-        <Spinner />
-      </Text>
-    )
-  }
-
   return (
     <Box flexDirection="column">
-      <Text>Enter your email to log in or create a dev account</Text>
-      {startVerificationLoading ? (
-        <Text>
-          Sending email <Spinner />
-        </Text>
-      ) : (
-        <Box>
-          <Text>Email: </Text>
-          <UncontrolledTextInput
-            placeholder="email@example.com"
-            initialValue={email}
-            onSubmit={setEmail}
-          />
-        </Box>
-      )}
+      <Step
+        status={
+          alreadyHasAuthToken
+            ? "skip"
+            : verificationToken
+            ? "success"
+            : startVerificationLoading
+            ? "waiting"
+            : "in-progress"
+        }
+        render={{
+          "in-progress": () => ({
+            label: "Enter your email to login or create a new account",
+            view: (
+              <Box>
+                <Text>Email: </Text>
+                <UncontrolledTextInput
+                  placeholder="email@example.com"
+                  initialValue={email}
+                  onSubmit={setEmail}
+                />
+              </Box>
+            ),
+          }),
+          waiting: () => ({ label: "Sending an email" }),
+          success: () => ({ label: "Email sent" }),
+        }}
+      />
+      <Step
+        status={
+          alreadyHasAuthToken
+            ? "skip"
+            : verificationToken && !authToken
+            ? "waiting"
+            : verificationToken && authToken
+            ? "success"
+            : "skip"
+        }
+        render={{
+          waiting: () => ({
+            label: `An email was sent to \`${email}\`, click the link inside to proceed`,
+          }),
+          success: () => ({ label: "Email confirmed" }),
+        }}
+      />
+      <Step
+        status={
+          meLoading || updateDevTeamByIdLoading
+            ? "waiting"
+            : me && me.handle
+            ? "success"
+            : updateDevTeamByIdError
+            ? "error"
+            : me
+            ? "in-progress"
+            : "skip"
+        }
+        render={{
+          waiting: () => ({
+            label: meLoading
+              ? "Checking authorization"
+              : updateDevTeamByIdLoading
+              ? "Setting your handle"
+              : null,
+          }),
+          success: () => ({ label: "You’re all set!" }),
+          "in-progress": () => ({
+            label:
+              "It looks like you’re creating a dev account for the first time. Please enter you handle",
+            view: (
+              <Box>
+                <Text>Handle: </Text>
+                <UncontrolledTextInput
+                  placeholder="coolDev"
+                  initialValue={newHandle}
+                  onSubmit={setNewHandle}
+                />
+              </Box>
+            ),
+          }),
+          error: () => ({
+            label: updateDevTeamByIdError?.message.includes(
+              "dev_team_handle_check"
+            )
+              ? "Invalid characters in the handle"
+              : "Something went wrong",
+          }),
+        }}
+      />
     </Box>
   )
 }
