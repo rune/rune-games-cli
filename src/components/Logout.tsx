@@ -14,10 +14,7 @@ export function Logout() {
   return (
     <Step
       status={loggedIn ? "success" : "error"}
-      render={{
-        success: () => ({ label: "Logged out successfully!" }),
-        error: () => ({ label: "You’re not logged in" }),
-      }}
+      label={loggedIn ? "Logged out successfully" : "You’re not logged in"}
     />
   )
 }

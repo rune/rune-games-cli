@@ -5,26 +5,17 @@ import React, { ReactNode } from "react"
 // @ts-ignore
 export const Spinner = SpinnerImport.default as typeof SpinnerImport
 
+type StepStatus = "in-progress" | "waiting" | "success" | "error"
+
 export function Step({
   status,
-  render,
+  label,
+  view,
 }: {
-  status: "skip" | "in-progress" | "waiting" | "success" | "error"
-  render: {
-    [K in Exclude<typeof status, "skip">]?: () => {
-      label: string | null
-      view?: ReactNode
-    }
-  }
+  status: StepStatus
+  label: string | ((status: StepStatus) => string)
+  view?: ReactNode | ((status: StepStatus) => ReactNode)
 }) {
-  if (status === "skip") return null
-
-  const content = render[status]
-
-  if (!content) return null
-
-  const { label, view } = content()
-
   return (
     <Box flexDirection="column">
       <Box>
@@ -48,10 +39,12 @@ export function Step({
               &nbsp;
             </Text>
           )}
-          {label}
+          {typeof label === "function" ? label(status) : label}
         </Text>
       </Box>
-      <Box paddingLeft={2}>{view}</Box>
+      <Box paddingLeft={2}>
+        {typeof view === "function" ? view(status) : view}
+      </Box>
     </Box>
   )
 }

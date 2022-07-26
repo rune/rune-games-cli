@@ -19,6 +19,7 @@ export function App() {
   if (cli.flags.version) return <Text>{packageJson.version}</Text>
   if (!command || command === "help") return <Text>{cli.help}</Text>
   if (command === "start") return <Start />
+  if (command === "login") return <LoginGate />
   if (command === "logout") return <Logout />
 
   return <LoginGate>{command === "list" ? <List /> : null}</LoginGate>

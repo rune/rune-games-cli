@@ -6,6 +6,7 @@ import { useCheckVerification } from "../gql/useCheckVerification.js"
 import { useMe } from "../gql/useMe.js"
 import { useStartVerification } from "../gql/useStartVerification.js"
 import { useUpdateDevTeamById } from "../gql/useUpdateDevTeamById.js"
+import { formatError } from "../lib/formatError.js"
 import { storage } from "../lib/storage/storage.js"
 
 import { Step } from "./Step.js"
@@ -59,22 +60,19 @@ export function LoginGate({ children }: { children?: ReactNode }) {
     }
   }, [newAuthToken])
 
+  const sanitizedNewHandle = newHandle.trim()
+
   useEffect(() => {
-    if (me && newHandle) {
-      updateDevTeamById({ id: me.id, patch: { handle: newHandle } })
+    if (me && sanitizedNewHandle) {
+      updateDevTeamById({ id: me.id, patch: { handle: sanitizedNewHandle } })
     }
-  }, [me, newHandle, updateDevTeamById])
+  }, [me, sanitizedNewHandle, updateDevTeamById])
 
   if (alreadyHasAuthToken && meLoading) {
-    return (
-      <Step
-        status="waiting"
-        render={{ waiting: () => ({ label: "Checking authorization" }) }}
-      />
-    )
+    return <Step status="waiting" label="Checking authorization" />
   }
 
-  if (me?.handle) {
+  if (me?.handle && children) {
     return (
       <Box flexDirection="column">
         {children}
@@ -89,95 +87,94 @@ export function LoginGate({ children }: { children?: ReactNode }) {
 
   return (
     <Box flexDirection="column">
-      <Step
-        status={
-          alreadyHasAuthToken
-            ? "skip"
-            : verificationToken
-            ? "success"
-            : startVerificationLoading
-            ? "waiting"
-            : "in-progress"
-        }
-        render={{
-          "in-progress": () => ({
-            label: "Enter your email to login or create a new account",
-            view: (
-              <Box>
-                <Text>Email: </Text>
-                <UncontrolledTextInput
-                  placeholder="email@example.com"
-                  initialValue={email}
-                  onSubmit={setEmail}
-                />
+      {!alreadyHasAuthToken && (
+        <>
+          <Step
+            status={
+              verificationToken
+                ? "success"
+                : startVerificationLoading
+                ? "waiting"
+                : "in-progress"
+            }
+            label={(status) =>
+              status === "success"
+                ? "Email sent"
+                : status === "waiting"
+                ? "Sending verification email"
+                : "Enter your email to login or create a new account"
+            }
+            view={(status) =>
+              status === "in-progress" && (
+                <Box>
+                  <Text>Email: </Text>
+                  <UncontrolledTextInput
+                    placeholder="email@example.com"
+                    initialValue={email}
+                    onSubmit={setEmail}
+                  />
+                </Box>
+              )
+            }
+          />
+          {!!verificationToken && (
+            <Step
+              status={authToken ? "success" : "waiting"}
+              label={(status) =>
+                status === "success"
+                  ? "Email confirmed"
+                  : `An email was sent to \`${sanitizedEmail}\`, please open it and click the link inside to proceed`
+              }
+            />
+          )}
+        </>
+      )}
+
+      {authToken && (
+        <Step
+          status={
+            me?.handle
+              ? "success"
+              : updateDevTeamByIdLoading || meLoading
+              ? "waiting"
+              : "in-progress"
+          }
+          label={(status) =>
+            status === "success"
+              ? `You’re logged in successfully as \`${me?.handle}\`!`
+              : status === "waiting"
+              ? updateDevTeamByIdLoading
+                ? "Setting your handle"
+                : "Checking authorization"
+              : "To finish setting up your account, please enter your desired handle"
+          }
+          view={(status) =>
+            (status === "in-progress" || updateDevTeamByIdError) && (
+              <Box flexDirection="column">
+                {updateDevTeamByIdError && (
+                  <Text color="red">
+                    {formatError(updateDevTeamByIdError, {
+                      'violates check constraint "dev_team_handle_check"':
+                        "Invalid input, try a different handle",
+                      'violates unique constraint "dev_team_handle_key"':
+                        "This handle is already taken, please choose another",
+                      default: "Something went wrong",
+                    })}
+                  </Text>
+                )}
+                <Box>
+                  <Text>Handle: </Text>
+                  <UncontrolledTextInput
+                    placeholder="coolDev"
+                    initialValue={newHandle}
+                    onSubmit={setNewHandle}
+                  />
+                </Box>
               </Box>
-            ),
-          }),
-          waiting: () => ({ label: "Sending an email" }),
-          success: () => ({ label: "Email sent" }),
-        }}
-      />
-      <Step
-        status={
-          alreadyHasAuthToken
-            ? "skip"
-            : verificationToken && !authToken
-            ? "waiting"
-            : verificationToken && authToken
-            ? "success"
-            : "skip"
-        }
-        render={{
-          waiting: () => ({
-            label: `An email was sent to \`${email}\`, click the link inside to proceed`,
-          }),
-          success: () => ({ label: "Email confirmed" }),
-        }}
-      />
-      <Step
-        status={
-          meLoading || updateDevTeamByIdLoading
-            ? "waiting"
-            : me && me.handle
-            ? "success"
-            : updateDevTeamByIdError
-            ? "error"
-            : me
-            ? "in-progress"
-            : "skip"
-        }
-        render={{
-          waiting: () => ({
-            label: meLoading
-              ? "Checking authorization"
-              : updateDevTeamByIdLoading
-              ? "Setting your handle"
-              : null,
-          }),
-          success: () => ({ label: "You’re all set!" }),
-          "in-progress": () => ({
-            label:
-              "It looks like you’re creating a dev account for the first time. Please enter you handle",
-            view: (
-              <Box>
-                <Text>Handle: </Text>
-                <UncontrolledTextInput
-                  placeholder="coolDev"
-                  initialValue={newHandle}
-                  onSubmit={setNewHandle}
-                />
-              </Box>
-            ),
-          }),
-          error: () => ({
-            label: updateDevTeamByIdError?.message.includes(
-              "dev_team_handle_check"
             )
-              ? "Invalid characters in the handle"
-              : "Something went wrong",
-          }),
-        }}
-      />
+          }
+        />
+      )}
     </Box>
   )
 }

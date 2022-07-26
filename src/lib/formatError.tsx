@@ -1,0 +1,12 @@
+import { ApolloError } from "@apollo/client/index.js"
+
+export function formatError(
+  error: ApolloError,
+  messages: { [key: string]: string; default: string }
+) {
+  for (const key of Object.keys(messages)) {
+    if (error.message.includes(key)) return messages[key]
+  }
+
+  return messages.default
+}
