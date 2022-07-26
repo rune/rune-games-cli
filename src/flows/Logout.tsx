@@ -1,8 +1,7 @@
 import React, { useEffect } from "react"
 
+import { Step } from "../components/Step.js"
 import { storage } from "../lib/storage/storage.js"
-
-import { Step } from "./Step.js"
 
 export function Logout() {
   const loggedIn = !!storage.get("authToken")
