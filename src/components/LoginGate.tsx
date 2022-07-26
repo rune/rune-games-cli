@@ -1,6 +1,12 @@
 import { Text, Box } from "ink"
-import { UncontrolledTextInput } from "ink-text-input"
-import React, { ReactNode, useState, useEffect, useMemo } from "react"
+import TextInputImport from "ink-text-input"
+import React, {
+  ReactNode,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react"
 
 import { useCheckVerification } from "../gql/useCheckVerification.js"
 import { useMe } from "../gql/useMe.js"
@@ -11,6 +17,9 @@ import { storage } from "../lib/storage/storage.js"
 
 import { Step } from "./Step.js"
 
+// @ts-ignore
+const TextInput = TextInputImport.default as typeof TextInputImport
+
 const checkVerificationEvery = 2000
 const alreadyHasAuthToken = !!storage.get("authToken")
 
@@ -19,11 +28,16 @@ export function LoginGate({ children }: { children?: ReactNode }) {
   const { me, meLoading } = useMe({ skip: !authToken })
   const [email, setEmail] = useState("")
   const [newHandle, setNewHandle] = useState("")
-  const { startVerification, startVerificationLoading, verificationToken } =
-    useStartVerification()
+  const {
+    startVerification,
+    startVerificationLoading,
+    startVerificationError,
+    verificationToken,
+  } = useStartVerification()
   const {
     checkVerification,
     checkVerificationLoading,
+    checkVerificationError,
     authToken: newAuthToken,
   } = useCheckVerification()
   const {
@@ -34,12 +48,17 @@ export function LoginGate({ children }: { children?: ReactNode }) {
 
   const sanitizedEmail = useMemo(() => email.trim().toLowerCase(), [email])
 
-  useEffect(() => {
+  const submitEmail = useCallback(() => {
     if (sanitizedEmail) startVerification({ email: sanitizedEmail })
   }, [sanitizedEmail, startVerification])
 
   useEffect(() => {
-    if (verificationToken && !authToken && !checkVerificationLoading) {
+    if (
+      verificationToken &&
+      !authToken &&
+      !checkVerificationLoading &&
+      !checkVerificationError
+    ) {
       const handle = setTimeout(() => {
         checkVerification({ verificationToken })
       }, checkVerificationEvery)
@@ -49,6 +68,7 @@ export function LoginGate({ children }: { children?: ReactNode }) {
   }, [
     authToken,
     checkVerification,
+    checkVerificationError,
     checkVerificationLoading,
     verificationToken,
   ])
@@ -62,7 +82,7 @@ export function LoginGate({ children }: { children?: ReactNode }) {
 
   const sanitizedNewHandle = newHandle.trim()
 
-  useEffect(() => {
+  const submitNewHandle = useCallback(() => {
     if (me && sanitizedNewHandle) {
       updateDevTeamById({ id: me.id, patch: { handle: sanitizedNewHandle } })
     }
@@ -106,23 +126,47 @@ export function LoginGate({ children }: { children?: ReactNode }) {
             }
             view={(status) =>
               status === "in-progress" && (
-                <Box>
-                  <Text>Email: </Text>
-                  <UncontrolledTextInput
-                    placeholder="email@example.com"
-                    initialValue={email}
-                    onSubmit={setEmail}
-                  />
+                <Box flexDirection="column">
+                  {startVerificationError && (
+                    <Text color="red">
+                      {formatError(startVerificationError, {
+                        "[tango][VERIFICATION_RATE_LIMIT]":
+                          "It looks like you’ve already tried to verify this email recently, please wait a bit before trying again",
+                        default: `Something went wrong`,
+                      })}
+                    </Text>
+                  )}
+                  <Box>
+                    <Text>Email: </Text>
+                    <TextInput
+                      placeholder="email@example.com"
+                      value={email}
+                      onChange={setEmail}
+                      onSubmit={submitEmail}
+                    />
+                  </Box>
                 </Box>
               )
             }
           />
           {!!verificationToken && (
             <Step
-              status={authToken ? "success" : "waiting"}
+              status={
+                authToken
+                  ? "success"
+                  : checkVerificationError
+                  ? "error"
+                  : "waiting"
+              }
               label={(status) =>
                 status === "success"
                   ? "Email confirmed"
+                  : checkVerificationError
+                  ? formatError(checkVerificationError, {
+                      "[tango][JWT_EXPIRED]":
+                        "It looks like the email link has expired, please try again",
+                      default: `Something went wrong. Please try again`,
+                    })
                   : `An email was sent to \`${sanitizedEmail}\`, please open it and click the link inside to proceed`
               }
             />
@@ -164,10 +208,11 @@ export function LoginGate({ children }: { children?: ReactNode }) {
                 )}
                 <Box>
                   <Text>Handle: </Text>
-                  <UncontrolledTextInput
+                  <TextInput
                     placeholder="coolDev"
-                    initialValue={newHandle}
-                    onSubmit={setNewHandle}
+                    value={newHandle}
+                    onChange={setNewHandle}
+                    onSubmit={submitNewHandle}
                   />
                 </Box>
               </Box>

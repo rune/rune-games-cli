@@ -5,7 +5,7 @@ export function formatError(
   messages: { [key: string]: string; default: string }
 ) {
   for (const key of Object.keys(messages)) {
-    if (error.message.includes(key)) return messages[key]
+    if (error.message.includes(key)) return messages[key] as string
   }
 
   return messages.default

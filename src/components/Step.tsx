@@ -3,7 +3,7 @@ import SpinnerImport from "ink-spinner"
 import React, { ReactNode } from "react"
 
 // @ts-ignore
-export const Spinner = SpinnerImport.default as typeof SpinnerImport
+const Spinner = SpinnerImport.default as typeof SpinnerImport
 
 type StepStatus = "in-progress" | "waiting" | "success" | "error"
 

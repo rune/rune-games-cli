@@ -17,6 +17,7 @@ export function useCheckVerification() {
       [mutate]
     ),
     checkVerificationLoading: result.loading,
+    checkVerificationError: result.error,
     authToken: result.data?.checkVerification.authToken,
   }
 }

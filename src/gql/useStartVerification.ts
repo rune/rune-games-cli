@@ -17,6 +17,7 @@ export function useStartVerification() {
       [mutate]
     ),
     startVerificationLoading: result.loading,
+    startVerificationError: result.error,
     verificationToken: result.data?.startVerification.verificationToken,
   }
 }
