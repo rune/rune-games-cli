@@ -25,7 +25,7 @@ const alreadyHasAuthToken = !!storage.get("authToken")
 
 export function LoginGate({ children }: { children?: ReactNode }) {
   const [authToken, setAuthToken] = useState(() => storage.get("authToken"))
-  const { me, meLoading } = useMe({ skip: !authToken })
+  const { me, meLoading, meError } = useMe({ skip: !authToken })
   const [email, setEmail] = useState("")
   const [newHandle, setNewHandle] = useState("")
   const {
@@ -90,6 +90,10 @@ export function LoginGate({ children }: { children?: ReactNode }) {
 
   if (alreadyHasAuthToken && meLoading) {
     return <Step status="waiting" label="Checking authorization" />
+  }
+
+  if (meError) {
+    return <Step status="error" label="Something went wrong" />
   }
 
   if (me?.handle && children) {
