@@ -4,9 +4,9 @@ import React from "react"
 import { cliCommand, cli } from "../lib/cli.js"
 import { packageJson } from "../lib/packageJson.js"
 
+import { List } from "./List.js"
 import { LoginGate } from "./LoginGate.js"
 import { Logout } from "./Logout.js"
-import { List } from "./Start/List.js"
 import { Start } from "./Start/Start.js"
 
 export function App() {
