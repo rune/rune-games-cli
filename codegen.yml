@@ -1,5 +1,5 @@
-# todo: production for CLI?
-schema: https://tango-launchpad.rune.ai/dev-graphql
+# todo: production for CI?
+schema: https://tango-launchpad.rune.ai/dev/graphql
 overwrite: true
 generates:
   src/generated/schema.graphql:

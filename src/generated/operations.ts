@@ -1,5 +1,11 @@
 export const operations = {
   Query: {
-    Games: "Games",
+    Games: 'Games',
+    Me: 'Me'
   },
+  Mutation: {
+    CheckVerification: 'CheckVerification',
+    StartVerification: 'StartVerification',
+    UpdateDevTeamById: 'UpdateDevTeamById'
+  }
 }

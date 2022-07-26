@@ -5,7 +5,7 @@ import { render } from "ink"
 import React from "react"
 
 import { client } from "./apollo/client.js"
-import { App } from "./App/App.js"
+import { App } from "./components/App.js"
 
 render(
   <ApolloProvider client={client}>

@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "cli": "ts-node --esm src",
+    "rune": "ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "prepublishOnly": "yarn build",
     "lint": "eslint . --ext .ts,.tsx",
@@ -33,6 +33,7 @@
     "express": "4.18.0",
     "graphql": "15.8.0",
     "ink": "3.2.0",
+    "ink-spinner": "4.0.3",
     "ink-text-input": "4.0.3",
     "is-port-reachable": "4.0.0",
     "meow": "10.1.2",
