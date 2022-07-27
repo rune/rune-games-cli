@@ -99,7 +99,7 @@ export function Login() {
                 ? "success"
                 : startVerificationLoading
                 ? "waiting"
-                : "in-progress"
+                : "userInput"
             }
             label={(status) =>
               status === "success"
@@ -109,7 +109,7 @@ export function Login() {
                 : "Enter your email to login or create a new account"
             }
             view={(status) =>
-              status === "in-progress" && (
+              status === "userInput" && (
                 <Box flexDirection="column">
                   {startVerificationError && (
                     <Text color="red">
@@ -165,7 +165,7 @@ export function Login() {
               ? "success"
               : updateDevTeamByIdLoading || meLoading
               ? "waiting"
-              : "in-progress"
+              : "userInput"
           }
           label={(status) =>
             status === "success"
@@ -177,7 +177,7 @@ export function Login() {
               : "To finish setting up your account, please enter your desired handle"
           }
           view={(status) =>
-            (status === "in-progress" || updateDevTeamByIdError) && (
+            (status === "userInput" || updateDevTeamByIdError) && (
               <Box flexDirection="column">
                 {updateDevTeamByIdError && (
                   <Text color="red">

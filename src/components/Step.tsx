@@ -5,7 +5,7 @@ import React, { ReactNode } from "react"
 // @ts-ignore
 const Spinner = SpinnerImport.default as typeof SpinnerImport
 
-type StepStatus = "in-progress" | "waiting" | "success" | "error"
+type StepStatus = "userInput" | "waiting" | "success" | "error"
 
 export function Step({
   status,
