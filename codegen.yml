@@ -1,5 +1,5 @@
-# todo: production for CI?
-schema: https://tango-launchpad.rune.ai/dev/graphql
+# todo: dynamically use production for CI, local for dev?
+schema: http://localhost:3000/dev/graphql
 overwrite: true
 generates:
   src/generated/schema.graphql:
@@ -23,6 +23,7 @@ generates:
         enumValues: keep
       scalars:
         Datetime: string
+        Upload: "{ content: Buffer, name: string, type: string }"
       nonOptionalTypename: true
       dedupeFragments: true
   src/generated/operations.ts:
