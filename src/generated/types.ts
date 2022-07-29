@@ -14,6 +14,7 @@ export interface Scalars {
   Float: number;
   Cursor: any;
   Datetime: string;
+  Upload: { content: Buffer, name: string, type: string };
 }
 
 export interface CheckVerificationInput {
@@ -25,6 +26,18 @@ export interface CheckVerificationPayload {
   __typename: 'CheckVerificationPayload';
   authToken: Maybe<Scalars['String']>;
   clientMutationId: Maybe<Scalars['String']>;
+}
+
+export interface CreateGameInput {
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  logo?: InputMaybe<Scalars['Upload']>;
+  title: Scalars['String'];
+}
+
+export interface CreateGamePayload {
+  __typename: 'CreateGamePayload';
+  clientMutationId: Maybe<Scalars['String']>;
+  game: Game;
 }
 
 export interface DevTeam {
@@ -133,8 +146,6 @@ export interface GameCondition {
   id?: InputMaybe<Scalars['Int']>;
   /** Checks for equality with the object’s `nextChallengeAt` field. */
   nextChallengeAt?: InputMaybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `title` field. */
-  title?: InputMaybe<Scalars['String']>;
 }
 
 /** A connection to a list of `Game` values. */
@@ -169,15 +180,14 @@ export enum GamesOrderBy {
   NEXT_CHALLENGE_AT_ASC = 'NEXT_CHALLENGE_AT_ASC',
   NEXT_CHALLENGE_AT_DESC = 'NEXT_CHALLENGE_AT_DESC',
   PRIMARY_KEY_ASC = 'PRIMARY_KEY_ASC',
-  PRIMARY_KEY_DESC = 'PRIMARY_KEY_DESC',
-  TITLE_ASC = 'TITLE_ASC',
-  TITLE_DESC = 'TITLE_DESC'
+  PRIMARY_KEY_DESC = 'PRIMARY_KEY_DESC'
 }
 
 /** The root mutation type which contains root level fields which mutate data. */
 export interface Mutation {
   __typename: 'Mutation';
   checkVerification: CheckVerificationPayload;
+  createGame: CreateGamePayload;
   startVerification: StartVerificationPayload;
   /** Updates a single `DevTeam` using a unique key and a patch. */
   updateDevTeamByEmail: Maybe<UpdateDevTeamPayload>;
@@ -191,6 +201,12 @@ export interface Mutation {
 /** The root mutation type which contains root level fields which mutate data. */
 export interface MutationCheckVerificationArgs {
   input: CheckVerificationInput;
+}
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export interface MutationCreateGameArgs {
+  input: CreateGameInput;
 }
 
 
@@ -239,7 +255,6 @@ export interface Query {
   /** Reads and enables pagination through a set of `DevTeam`. */
   devTeams: Maybe<DevTeamsConnection>;
   gameById: Maybe<Game>;
-  gameByTitle: Maybe<Game>;
   /** Reads and enables pagination through a set of `Game`. */
   games: Maybe<GamesConnection>;
   me: DevTeam;
@@ -284,12 +299,6 @@ export interface QueryDevTeamsArgs {
 /** The root query type which gives access points into the data universe. */
 export interface QueryGameByIdArgs {
   id: Scalars['Int'];
-}
-
-
-/** The root query type which gives access points into the data universe. */
-export interface QueryGameByTitleArgs {
-  title: Scalars['String'];
 }
 
 
@@ -412,6 +421,11 @@ export type CheckVerificationPayloadFieldPolicy = {
 	authToken?: FieldPolicy<any> | FieldReadFunction<any>,
 	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type CreateGamePayloadKeySpecifier = ('clientMutationId' | 'game' | CreateGamePayloadKeySpecifier)[];
+export type CreateGamePayloadFieldPolicy = {
+	clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>,
+	game?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type DevTeamKeySpecifier = ('createdAt' | 'email' | 'games' | 'handle' | 'id' | 'updatedAt' | DevTeamKeySpecifier)[];
 export type DevTeamFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -459,9 +473,10 @@ export type GamesEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('checkVerification' | 'startVerification' | 'updateDevTeamByEmail' | 'updateDevTeamByHandle' | 'updateDevTeamById' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('checkVerification' | 'createGame' | 'startVerification' | 'updateDevTeamByEmail' | 'updateDevTeamByHandle' | 'updateDevTeamById' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	checkVerification?: FieldPolicy<any> | FieldReadFunction<any>,
+	createGame?: FieldPolicy<any> | FieldReadFunction<any>,
 	startVerification?: FieldPolicy<any> | FieldReadFunction<any>,
 	updateDevTeamByEmail?: FieldPolicy<any> | FieldReadFunction<any>,
 	updateDevTeamByHandle?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -474,14 +489,13 @@ export type PageInfoFieldPolicy = {
 	hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	startCursor?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('devTeamByEmail' | 'devTeamByHandle' | 'devTeamById' | 'devTeams' | 'gameById' | 'gameByTitle' | 'games' | 'me' | 'query' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('devTeamByEmail' | 'devTeamByHandle' | 'devTeamById' | 'devTeams' | 'gameById' | 'games' | 'me' | 'query' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	devTeamByEmail?: FieldPolicy<any> | FieldReadFunction<any>,
 	devTeamByHandle?: FieldPolicy<any> | FieldReadFunction<any>,
 	devTeamById?: FieldPolicy<any> | FieldReadFunction<any>,
 	devTeams?: FieldPolicy<any> | FieldReadFunction<any>,
 	gameById?: FieldPolicy<any> | FieldReadFunction<any>,
-	gameByTitle?: FieldPolicy<any> | FieldReadFunction<any>,
 	games?: FieldPolicy<any> | FieldReadFunction<any>,
 	me?: FieldPolicy<any> | FieldReadFunction<any>,
 	query?: FieldPolicy<any> | FieldReadFunction<any>
@@ -502,6 +516,10 @@ export type StrictTypedTypePolicies = {
 	CheckVerificationPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CheckVerificationPayloadKeySpecifier | (() => undefined | CheckVerificationPayloadKeySpecifier),
 		fields?: CheckVerificationPayloadFieldPolicy,
+	},
+	CreateGamePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CreateGamePayloadKeySpecifier | (() => undefined | CreateGamePayloadKeySpecifier),
+		fields?: CreateGamePayloadFieldPolicy,
 	},
 	DevTeam?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DevTeamKeySpecifier | (() => undefined | DevTeamKeySpecifier),
