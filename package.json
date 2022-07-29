@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "rune": "TANGO_ENV=local ts-node --esm src",
+    "rune": "STAGE=local ts-node --esm src",
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "prepublishOnly": "yarn build",
     "lint": "eslint . --ext .ts,.tsx",

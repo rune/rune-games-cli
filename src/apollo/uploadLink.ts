@@ -21,9 +21,11 @@ const options = {
 
 export const uploadLink = createUploadLink({
   uri:
-    process.env.TANGO_ENV === "local"
+    process.env.STAGE === "local"
       ? "http://localhost:3000/dev/graphql"
-      : "https://tango-production.rune.ai/dev/graphql",
+      : `https://tango-${
+          process.env.STAGE ?? "production"
+        }.rune.ai/dev/graphql`,
   fetch,
   ...(options as any),
 })
