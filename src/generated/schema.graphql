@@ -8,6 +8,17 @@ type CheckVerificationPayload {
   clientMutationId: String
 }
 
+input CreateGameInput {
+  clientMutationId: String
+  logo: Upload
+  title: String!
+}
+
+type CreateGamePayload {
+  clientMutationId: String
+  game: Game!
+}
+
 """A location in a connection that can be used for resuming pagination."""
 scalar Cursor
 
@@ -160,9 +171,6 @@ input GameCondition {
 
   """Checks for equality with the object’s `nextChallengeAt` field."""
   nextChallengeAt: Datetime
-
-  """Checks for equality with the object’s `title` field."""
-  title: String
 }
 
 """A connection to a list of `Game` values."""
@@ -202,8 +210,6 @@ enum GamesOrderBy {
   NEXT_CHALLENGE_AT_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
-  TITLE_ASC
-  TITLE_DESC
 }
 
 """
@@ -216,6 +222,12 @@ type Mutation {
     """
     input: CheckVerificationInput!
   ): CheckVerificationPayload!
+  createGame(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateGameInput!
+  ): CreateGamePayload!
   startVerification(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -298,7 +310,6 @@ type Query {
     orderBy: [DevTeamsOrderBy!] = [PRIMARY_KEY_ASC]
   ): DevTeamsConnection
   gameById(id: Int!): Game
-  gameByTitle(title: String!): Game
 
   """Reads and enables pagination through a set of `Game`."""
   games(
@@ -414,3 +425,6 @@ type UpdateDevTeamPayload {
   """
   query: Query
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
