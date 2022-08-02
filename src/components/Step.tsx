@@ -1,3 +1,4 @@
+import figures from "figures"
 import { Box, Text } from "ink"
 import SpinnerImport from "ink-spinner"
 import React, { ReactNode } from "react"
@@ -35,7 +36,11 @@ export function Step({
             </>
           ) : (
             <Text>
-              {status === "success" ? "✓" : status === "error" ? "✖" : "•"}
+              {status === "success"
+                ? figures.tick
+                : status === "error"
+                ? figures.cross
+                : figures.bullet}
               &nbsp;
             </Text>
           )}
