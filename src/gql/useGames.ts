@@ -9,9 +9,15 @@ export function useGames({
   skip?: boolean
   condition?: GameCondition
 } = {}) {
-  const { data } = useQuery(GamesDocument, { skip, variables: { condition } })
+  const { data, ...rest } = useQuery(GamesDocument, {
+    skip,
+    variables: { condition },
+  })
 
-  return { games: data?.games?.nodes }
+  return {
+    games: data?.games?.nodes,
+    gamesLoading: rest.loading,
+  }
 }
 
 gql`

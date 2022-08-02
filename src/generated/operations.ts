@@ -5,6 +5,7 @@ export const operations = {
   },
   Mutation: {
     CheckVerification: 'CheckVerification',
+    CreateGame: 'CreateGame',
     StartVerification: 'StartVerification',
     UpdateDevTeamById: 'UpdateDevTeamById',
     ValidateGame: 'ValidateGame'

@@ -75,7 +75,7 @@ export function GameDirInputStep({
             <Box>
               <Text>Game directory: </Text>
               <TextInput
-                placeholder="./path/to/game"
+                placeholder="/path/to/game"
                 value={gameDir}
                 onChange={setGameDir}
                 onSubmit={onSubmitGameDir}

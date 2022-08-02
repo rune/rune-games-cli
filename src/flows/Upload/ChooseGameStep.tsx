@@ -7,14 +7,23 @@ import { useGames } from "../../gql/useGames.js"
 import { useMe } from "../../gql/useMe.js"
 
 export function ChooseGameStep({
+  currentGameId,
   onComplete,
 }: {
+  currentGameId: number | null | undefined
   onComplete: (gameId: number | null) => void
 }) {
   const { me } = useMe()
-  const { games } = useGames({ skip: !me, condition: { devTeamId: me?.id } })
+  const { games, gamesLoading } = useGames({
+    skip: !me,
+    condition: { devTeamId: me?.id },
+  })
   const [gameId, setGameId] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (currentGameId) setGameId(currentGameId)
+  }, [currentGameId])
 
   const items = useMemo(
     () => [
@@ -34,15 +43,22 @@ export function ChooseGameStep({
     if (gameId === null) return "Will create a new game"
 
     return `Will upload a new version of ${
-      games?.find((game) => game.id === gameId)?.title
+      games?.find((game) => game.id === gameId)?.title ?? "..."
     }`
   }, [gameId, games])
 
   return (
     <Step
-      status={submitted ? "success" : "userInput"}
-      label={submitted ? chosenGameLabel : "Choose a game to upload"}
+      status={gamesLoading ? "waiting" : submitted ? "success" : "userInput"}
+      label={
+        gamesLoading
+          ? "Loading a list of games"
+          : submitted
+          ? chosenGameLabel
+          : "Choose a game to upload"
+      }
       view={
+        !gamesLoading &&
         !submitted && (
           <Select
             items={items}
