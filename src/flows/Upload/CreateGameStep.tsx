@@ -10,7 +10,7 @@ import { prepareFileUpload } from "../../lib/prepareFileUpload.js"
 // @ts-ignore
 const TextInput = TextInputImport.default as typeof TextInputImport
 
-export function CreateNewGameStep({
+export function CreateGameStep({
   onComplete,
 }: {
   onComplete: (newGameId: number) => void
@@ -104,7 +104,7 @@ export function CreateNewGameStep({
                     "This game title is invalid, try something else",
                   "Input buffer contains unsupported image format":
                     "Not an image file",
-                  default: `Something went wrong ${createGameError.message}`,
+                  default: `Something went wrong`,
                 })
               : "Creating the game"
           }

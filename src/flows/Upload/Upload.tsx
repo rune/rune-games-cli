@@ -2,8 +2,8 @@ import { Box } from "ink"
 import React, { useState } from "react"
 
 import { ChooseGameStep } from "./ChooseGameStep.js"
+import { CreateGameStep } from "./CreateGameStep.js"
 import { CreateGameVersionStep } from "./CreateGameVersionStep.js"
-import { CreateNewGameStep } from "./CreateNewGameStep.js"
 import { GameDirInputStep } from "./GameDirInputStep.js"
 
 export function Upload() {
@@ -16,7 +16,7 @@ export function Upload() {
       {gameDir !== undefined && (
         <ChooseGameStep currentGameId={gameId} onComplete={setGameId} />
       )}
-      {gameId === null && <CreateNewGameStep onComplete={setGameId} />}
+      {gameId === null && <CreateGameStep onComplete={setGameId} />}
       {!!gameId && !!gameDir && (
         <CreateGameVersionStep gameId={gameId} gameDir={gameDir} />
       )}
