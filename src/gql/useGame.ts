@@ -20,7 +20,7 @@ gql`
       id
       title
       createdAt
-      gameVersions {
+      gameVersions(orderBy: [PRIMARY_KEY_DESC]) {
         nodes {
           gameId
           gameVersionId
