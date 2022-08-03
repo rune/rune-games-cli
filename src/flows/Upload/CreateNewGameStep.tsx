@@ -112,7 +112,9 @@ export function CreateNewGameStep({
                     "This game title is already taken, try something else",
                   "[tango][CREATE_GAME_FAILED_TITLE_INVALID]":
                     "This game title is invalid, try something else",
-                  default: `Something went wrong${createGameError.message}`,
+                  "Input buffer contains unsupported image format":
+                    "Not an image file",
+                  default: `Something went wrong ${createGameError.message}`,
                 })
               : "Creating the game"
           }

@@ -67,7 +67,7 @@ function getWindow<T>(list: T[], index: number, windowSize: number) {
 
   const window = []
 
-  for (let i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length * 2; i++) {
     if (windowSizeRemains === 0) break
 
     const item = list[index + Math.floor(i % 2 === 0 ? i / 2 : -i / 2)]
