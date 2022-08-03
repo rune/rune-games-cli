@@ -8,7 +8,7 @@ export function Select<T>({
   onChange,
   onSubmit,
 }: {
-  items: { label: string; value: T }[]
+  items: { label: string; value: T; disabled?: boolean }[]
   value: T
   onChange: (value: T) => void
   onSubmit: () => void
@@ -31,6 +31,7 @@ export function Select<T>({
       if (prevItem) onChange(prevItem.value)
       else if (lastItem) onChange(lastItem.value)
     } else if (key.return) {
+      if (items.find((item) => item.value === value)?.disabled) return
       onSubmit()
     }
   })
@@ -48,8 +49,16 @@ export function Select<T>({
         </Text>
       )}
       {window.map((item, i) => (
-        <Text key={i} dimColor={value !== item.value}>
-          {value === item.value ? figures.pointer : " "}{" "}
+        <Text
+          key={i}
+          dimColor={value !== item.value || item.disabled}
+          color={item.disabled ? "red" : undefined}
+        >
+          {value === item.value
+            ? item.disabled
+              ? figures.cross
+              : figures.pointer
+            : " "}{" "}
           <Text underline={value === item.value}>{item.label}</Text>
         </Text>
       ))}

@@ -22,11 +22,18 @@ export function useGames({
 
 gql`
   query Games($condition: GameCondition) {
-    games(condition: $condition, orderBy: [ID_DESC]) {
+    games(condition: $condition, orderBy: [PRIMARY_KEY_DESC]) {
       nodes {
         id
         title
-        createdAt
+        gameVersions(orderBy: [PRIMARY_KEY_DESC]) {
+          nodes {
+            gameId
+            gameVersionId
+            status
+            supportsChallenge
+          }
+        }
       }
     }
   }

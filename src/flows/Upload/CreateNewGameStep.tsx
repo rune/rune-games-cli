@@ -1,24 +1,14 @@
-import fs from "fs"
 import { Box } from "ink"
 import TextInputImport from "ink-text-input"
-import mime from "mime-types"
-import path from "path"
 import React, { useState, useCallback, useEffect } from "react"
 
 import { Step } from "../../components/Step.js"
 import { useCreateGame } from "../../gql/useCreateGame.js"
 import { formatApolloError } from "../../lib/formatApolloError.js"
+import { prepareFileUpload } from "../../lib/prepareFileUpload.js"
 
 // @ts-ignore
 const TextInput = TextInputImport.default as typeof TextInputImport
-
-function prepareFileUpload(filePath: string) {
-  return {
-    name: path.basename(filePath),
-    content: fs.readFileSync(filePath),
-    type: mime.lookup(filePath) || "application/octet-stream",
-  }
-}
 
 export function CreateNewGameStep({
   onComplete,

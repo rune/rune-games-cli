@@ -63,7 +63,7 @@ export function GameDirInputStep({
       view={(status) => (
         <Box flexDirection="column">
           {validateGameError ? (
-            <Text>Something went wrong</Text>
+            <Text color="red">Something went wrong</Text>
           ) : (
             validateGameResult?.errors.map((error, i) => (
               <Text key={i} color="red">
