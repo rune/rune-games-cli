@@ -51,7 +51,7 @@ export function Select<T>({
       {window.map((item, i) => (
         <Text
           key={i}
-          dimColor={value !== item.value || item.disabled}
+          dimColor={value !== item.value}
           color={item.disabled ? "red" : undefined}
         >
           {value === item.value
