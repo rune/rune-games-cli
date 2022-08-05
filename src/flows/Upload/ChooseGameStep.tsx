@@ -2,7 +2,6 @@ import React, { useState, useMemo, useCallback, useEffect } from "react"
 
 import { Select } from "../../components/Select.js"
 import { Step } from "../../components/Step.js"
-import { GameVersionStatus } from "../../generated/types.js"
 import { useGames } from "../../gql/useGames.js"
 import { useMe } from "../../gql/useMe.js"
 
@@ -31,9 +30,11 @@ export function ChooseGameStep({
       ...(games ?? []).map((game) => ({
         label: `${game.title}${
           game.gameVersions.nodes[0]
-            ? ` (latest version #${game.gameVersions.nodes[0].gameVersionId}, ${
-                game.gameVersions.nodes[0].status
-              }, ${
+            ? ` (latest version #${
+                game.gameVersions.nodes[0].gameVersionId
+              }, ${game.gameVersions.nodes[0].status
+                .toLowerCase()
+                .replace("_", " ")}, ${
                 game.gameVersions.nodes[0].supportsChallenge
                   ? "challenges supported"
                   : "challenges not supported"
@@ -41,8 +42,6 @@ export function ChooseGameStep({
             : " (no versions uploaded)"
         }`,
         value: game.id,
-        disabled:
-          game.gameVersions.nodes[0]?.status === GameVersionStatus.IN_REVIEW,
       })),
     ],
     [games]
