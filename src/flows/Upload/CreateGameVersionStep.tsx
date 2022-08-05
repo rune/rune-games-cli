@@ -93,8 +93,6 @@ export function CreateGameVersionStep({
               ? "Uploading a new game version"
               : createGameVersionError
               ? formatApolloError(createGameVersionError, {
-                  game_version_only_one_version_to_be_released:
-                    "A previously uploaded version for this game is still in review, you cannot upload a new version yet",
                   default: "Something went wrong",
                 })
               : `Version #${newGameVersionId} uploaded successfully and is now in review`
