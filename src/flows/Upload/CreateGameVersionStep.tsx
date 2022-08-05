@@ -62,12 +62,12 @@ export function CreateGameVersionStep({
         }
         label={
           gameLoading
-            ? "Checking challenge support"
+            ? "Checking daily challenge support"
             : typeof challengeSupport === "boolean"
             ? `This game ${
                 challengeSupport ? "supports" : "does not support"
-              } challenges`
-            : "Does this game support challenges?"
+              } daily challenges`
+            : "Does this game support daily challenges?"
         }
         view={
           !gameLoading &&
