@@ -24,7 +24,8 @@
     "prepublishOnly": "yarn build",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "release": "scripts/release.sh"
+    "release": "scripts/release.sh",
+    "gql-gen-local": "SCHEMA_PATH=http://localhost:3000/dev/graphql gql-gen"
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
