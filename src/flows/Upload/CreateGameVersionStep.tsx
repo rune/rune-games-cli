@@ -21,6 +21,7 @@ export function CreateGameVersionStep({
     createGameVersionLoading,
     createGameVersionError,
     newGameVersionId,
+    previewLink,
   } = useCreateGameVersion()
   const [challengeSupport, setChallengeSupport] = useState<
     boolean | undefined
@@ -95,7 +96,7 @@ export function CreateGameVersionStep({
               ? formatApolloError(createGameVersionError, {
                   default: "Something went wrong",
                 })
-              : `Version #${newGameVersionId} uploaded successfully and is now in review`
+              : `Version #${newGameVersionId} uploaded successfully and is now in review. You can also test it here: ${previewLink}`
           }
         />
       )}

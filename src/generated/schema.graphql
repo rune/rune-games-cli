@@ -29,6 +29,7 @@ input CreateGameVersionInput {
 type CreateGameVersionPayload {
   clientMutationId: String
   gameVersion: GameVersion!
+  previewLink: String!
 }
 
 """A location in a connection that can be used for resuming pagination."""
