@@ -5,6 +5,5 @@ import { uploadLink } from "./uploadLink.js"
 
 export const client = new ApolloClient({
   link: contextLink.concat(uploadLink),
-  // todo: typePolicies
   cache: new InMemoryCache(),
 })
