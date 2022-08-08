@@ -1,6 +1,6 @@
 import { useQuery, gql } from "@apollo/client/index.js"
 
-import { GamesDocument, GameCondition } from "../generated/types.js"
+import { GamesDocument, GameCondition, GamesQuery } from "../generated/types.js"
 
 export function useGames({
   skip,
@@ -38,3 +38,17 @@ gql`
     }
   }
 `
+
+export function gameItemLabel(
+  game: NonNullable<GamesQuery["games"]>["nodes"][0]
+) {
+  return `${game.title}${
+    game.gameVersions.nodes[0]
+      ? ` (latest version #${
+          game.gameVersions.nodes[0].gameVersionId
+        }, ${game.gameVersions.nodes[0].status
+          .toLowerCase()
+          .replace("_", " ")})`
+      : " (no versions uploaded)"
+  }`
+}

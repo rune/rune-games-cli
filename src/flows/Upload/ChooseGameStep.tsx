@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect } from "react"
 
 import { Select } from "../../components/Select.js"
 import { Step } from "../../components/Step.js"
-import { useGames } from "../../gql/useGames.js"
+import { useGames, gameItemLabel } from "../../gql/useGames.js"
 import { useMe } from "../../gql/useMe.js"
 
 export function ChooseGameStep({
@@ -28,15 +28,7 @@ export function ChooseGameStep({
     () => [
       { label: "New game", value: null },
       ...(games ?? []).map((game) => ({
-        label: `${game.title}${
-          game.gameVersions.nodes[0]
-            ? ` (latest version #${
-                game.gameVersions.nodes[0].gameVersionId
-              }, ${game.gameVersions.nodes[0].status
-                .toLowerCase()
-                .replace("_", " ")})`
-            : " (no versions uploaded)"
-        }`,
+        label: gameItemLabel(game),
         value: game.id,
       })),
     ],
