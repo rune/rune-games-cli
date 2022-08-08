@@ -1,7 +1,8 @@
+import figures from "figures"
 import { Text, Box } from "ink"
 import React from "react"
 
-import { useGames } from "../gql/useGames.js"
+import { useGames, gameItemLabel } from "../gql/useGames.js"
 import { useMe } from "../gql/useMe.js"
 
 export function List() {
@@ -14,7 +15,9 @@ export function List() {
     <Box flexDirection="column">
       <Text>Your games:</Text>
       {games.map((game) => (
-        <Text key={game.id}>- {game.title}</Text>
+        <Text key={game.id}>
+          {figures.bullet} {gameItemLabel(game)}
+        </Text>
       ))}
     </Box>
   )
