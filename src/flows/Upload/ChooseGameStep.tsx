@@ -34,11 +34,7 @@ export function ChooseGameStep({
                 game.gameVersions.nodes[0].gameVersionId
               }, ${game.gameVersions.nodes[0].status
                 .toLowerCase()
-                .replace("_", " ")}, ${
-                game.gameVersions.nodes[0].supportsChallenge
-                  ? "challenges supported"
-                  : "challenges not supported"
-              })`
+                .replace("_", " ")})`
             : " (no versions uploaded)"
         }`,
         value: game.id,
