@@ -28,7 +28,13 @@ export const cli = meow(
   }
 )
 
-export const validCommands = ["help", "start", "logout", "list"] as const
+export const validCommands = [
+  "help",
+  "start",
+  "logout",
+  "list",
+  "upload",
+] as const
 
 export function cliCommand() {
   const command = cli.input[0] as typeof validCommands[number] | undefined

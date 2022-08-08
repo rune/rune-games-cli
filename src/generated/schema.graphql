@@ -19,6 +19,18 @@ type CreateGamePayload {
   game: Game!
 }
 
+input CreateGameVersionInput {
+  challengeSupport: Boolean
+  clientMutationId: String
+  content: Upload!
+  gameId: Int!
+}
+
+type CreateGameVersionPayload {
+  clientMutationId: String
+  gameVersion: GameVersion!
+}
+
 """A location in a connection that can be used for resuming pagination."""
 scalar Cursor
 
@@ -140,6 +152,35 @@ type Game {
   """Reads a single `DevTeam` that is related to this `Game`."""
   devTeam: DevTeam
   devTeamId: Int!
+
+  """Reads and enables pagination through a set of `GameVersion`."""
+  gameVersions(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: GameVersionCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `GameVersion`."""
+    orderBy: [GameVersionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GameVersionsConnection!
   id: Int!
 
   """
@@ -171,6 +212,73 @@ input GameCondition {
 
   """Checks for equality with the object’s `nextChallengeAt` field."""
   nextChallengeAt: Datetime
+}
+
+input GameFile {
+  content: String
+  path: String!
+  size: Int!
+}
+
+type GameVersion {
+  """Reads a single `Game` that is related to this `GameVersion`."""
+  game: Game
+  gameId: Int!
+  gameVersionId: Int!
+  status: GameVersionStatus!
+  supportsChallenge: Boolean!
+}
+
+"""
+A condition to be used against `GameVersion` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input GameVersionCondition {
+  """Checks for equality with the object’s `gameId` field."""
+  gameId: Int
+}
+
+enum GameVersionStatus {
+  ACTIVE
+  INACTIVE
+  IN_REVIEW
+  UPLOADING
+  WAITING_FOR_RELEASE
+}
+
+"""A connection to a list of `GameVersion` values."""
+type GameVersionsConnection {
+  """
+  A list of edges which contains the `GameVersion` and cursor to aid in pagination.
+  """
+  edges: [GameVersionsEdge!]!
+
+  """A list of `GameVersion` objects."""
+  nodes: [GameVersion!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `GameVersion` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `GameVersion` edge in the connection."""
+type GameVersionsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `GameVersion` at the end of the edge."""
+  node: GameVersion!
+}
+
+"""Methods to use when ordering `GameVersion`."""
+enum GameVersionsOrderBy {
+  GAME_ID_ASC
+  GAME_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
 }
 
 """A connection to a list of `Game` values."""
@@ -228,6 +336,12 @@ type Mutation {
     """
     input: CreateGameInput!
   ): CreateGamePayload!
+  createGameVersion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateGameVersionInput!
+  ): CreateGameVersionPayload!
   startVerification(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -258,6 +372,12 @@ type Mutation {
     """
     input: UpdateDevTeamByIdInput!
   ): UpdateDevTeamPayload
+  validateGame(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: ValidateGameInput!
+  ): ValidateGamePayload!
 }
 
 """Information about pagination in a connection."""
@@ -310,6 +430,36 @@ type Query {
     orderBy: [DevTeamsOrderBy!] = [PRIMARY_KEY_ASC]
   ): DevTeamsConnection
   gameById(id: Int!): Game
+  gameVersionByGameIdAndGameVersionId(gameId: Int!, gameVersionId: Int!): GameVersion
+
+  """Reads and enables pagination through a set of `GameVersion`."""
+  gameVersions(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: GameVersionCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `GameVersion`."""
+    orderBy: [GameVersionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GameVersionsConnection
 
   """Reads and enables pagination through a set of `Game`."""
   games(
@@ -428,3 +578,14 @@ type UpdateDevTeamPayload {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input ValidateGameInput {
+  clientMutationId: String
+  files: [GameFile!]!
+}
+
+type ValidateGamePayload {
+  clientMutationId: String
+  errors: [String!]!
+  valid: Boolean!
+}
