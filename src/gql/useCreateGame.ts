@@ -4,9 +4,7 @@ import { useCallback } from "react"
 import { CreateGameDocument, CreateGameInput } from "../generated/types.js"
 
 export function useCreateGame() {
-  const [mutate, result] = useMutation(CreateGameDocument, {
-    refetchQueries: ["Games"],
-  })
+  const [mutate, result] = useMutation(CreateGameDocument)
 
   return {
     createGame: useCallback(

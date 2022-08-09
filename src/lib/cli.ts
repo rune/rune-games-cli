@@ -40,6 +40,7 @@ export const validCommands = [
   "logout",
   "list",
   "upload",
+  "update",
 ] as const
 
 export function cliCommand() {
