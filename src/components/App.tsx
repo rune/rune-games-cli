@@ -9,6 +9,7 @@ import { cliCommand, cli } from "../lib/cli.js"
 import { packageJson } from "../lib/packageJson.js"
 
 import { LoginGate } from "./LoginGate.js"
+import { VersionCheckGate } from "./VersionCheckGate.js"
 
 export function App() {
   const { command, commandInvalid } = cliCommand()
@@ -17,14 +18,25 @@ export function App() {
     return <Text color="red">Invalid command `{command}`</Text>
   }
 
-  if (cli.flags.version) return <Text>{packageJson.version}</Text>
-  if (!command || command === "help") return <Text>{cli.help}</Text>
-  if (command === "start") return <Start />
-  if (command === "logout") return <Logout />
-
   return (
-    <LoginGate>
-      {command === "list" ? <List /> : command === "upload" ? <Upload /> : null}
-    </LoginGate>
+    <VersionCheckGate>
+      {cli.flags.version ? (
+        <Text>{packageJson.version}</Text>
+      ) : !command || command === "help" ? (
+        <Text>{cli.help}</Text>
+      ) : command === "start" ? (
+        <Start />
+      ) : command === "logout" ? (
+        <Logout />
+      ) : (
+        <LoginGate>
+          {command === "list" ? (
+            <List />
+          ) : command === "upload" ? (
+            <Upload />
+          ) : null}
+        </LoginGate>
+      )}
+    </VersionCheckGate>
   )
 }
