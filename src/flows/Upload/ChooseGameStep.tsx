@@ -13,10 +13,7 @@ export function ChooseGameStep({
   onComplete: (gameId: number | null) => void
 }) {
   const { me } = useMe()
-  const { games, gamesLoading } = useGames({
-    skip: !me,
-    condition: { devTeamId: me?.id },
-  })
+  const { games, gamesLoading } = useGames({ skip: !me })
   const [gameId, setGameId] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
@@ -24,15 +21,20 @@ export function ChooseGameStep({
     if (currentGameId) setGameId(currentGameId)
   }, [currentGameId])
 
+  const myGames = useMemo(
+    () => games?.filter((game) => game.devTeamId === me?.id),
+    [games, me?.id]
+  )
+
   const items = useMemo(
     () => [
       { label: "New game", value: null },
-      ...(games ?? []).map((game) => ({
-        label: gameItemLabel(game),
+      ...((me?.admin ? games : myGames) ?? []).map((game) => ({
+        label: gameItemLabel({ game, showDevHandle: me?.admin }),
         value: game.id,
       })),
     ],
-    [games]
+    [games, me?.admin, myGames]
   )
 
   const onSubmit = useCallback(() => setSubmitted(true), [])

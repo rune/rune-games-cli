@@ -27,6 +27,10 @@ gql`
         id
         title
         devTeamId
+        devTeam {
+          id
+          handle
+        }
         gameVersions(orderBy: [PRIMARY_KEY_DESC]) {
           nodes {
             gameId
@@ -40,10 +44,16 @@ gql`
   }
 `
 
-export function gameItemLabel(
+export function gameItemLabel({
+  game,
+  showDevHandle,
+}: {
   game: NonNullable<GamesQuery["games"]>["nodes"][0]
-) {
+  showDevHandle?: boolean
+}) {
   return `${game.title}${
+    showDevHandle ? ` [dev: ${game.devTeam?.handle}]` : ""
+  }${
     game.gameVersions.nodes[0]
       ? ` (latest version #${
           game.gameVersions.nodes[0].gameVersionId

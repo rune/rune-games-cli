@@ -20,7 +20,7 @@ export function List() {
       {myGames?.length ? (
         myGames.map((game) => (
           <Text key={game.id}>
-            {figures.bullet} {gameItemLabel(game)}
+            {figures.bullet} {gameItemLabel({ game })}
           </Text>
         ))
       ) : (
@@ -31,7 +31,7 @@ export function List() {
           <Text bold>All games:</Text>
           {games?.map((game) => (
             <Text key={game.id}>
-              {figures.bullet} {gameItemLabel(game)}
+              {figures.bullet} {gameItemLabel({ game, showDevHandle: true })}
             </Text>
           ))}
         </>
