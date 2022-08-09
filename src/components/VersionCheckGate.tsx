@@ -54,7 +54,7 @@ export function VersionCheckGate({ children }: { children: ReactNode }) {
     )
   }
 
-  if (!skipped) return <Text>{helpText}</Text>
+  if (skipped === false) return <Text>{helpText}</Text>
 
   return <Box flexDirection="column">{children}</Box>
 }
