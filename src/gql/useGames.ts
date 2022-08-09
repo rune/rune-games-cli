@@ -26,6 +26,7 @@ gql`
       nodes {
         id
         title
+        devTeamId
         gameVersions(orderBy: [PRIMARY_KEY_DESC]) {
           nodes {
             gameId

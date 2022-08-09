@@ -41,6 +41,7 @@ A point in time as described by the [ISO
 scalar Datetime
 
 type DevTeam {
+  admin: Boolean!
   createdAt: Datetime!
   email: String
 

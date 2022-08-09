@@ -1,24 +1,41 @@
 import figures from "figures"
 import { Text, Box } from "ink"
-import React from "react"
+import React, { useMemo } from "react"
 
 import { useGames, gameItemLabel } from "../gql/useGames.js"
 import { useMe } from "../gql/useMe.js"
 
 export function List() {
   const { me } = useMe()
-  const { games } = useGames({ skip: !me, condition: { devTeamId: me?.id } })
+  const { games } = useGames({ skip: !me })
 
-  if (!games?.length) return <Text>You have not submitted any games yet</Text>
+  const myGames = useMemo(
+    () => games?.filter((game) => game.devTeamId === me?.id),
+    [games, me?.id]
+  )
 
   return (
     <Box flexDirection="column">
-      <Text>Your games:</Text>
-      {games.map((game) => (
-        <Text key={game.id}>
-          {figures.bullet} {gameItemLabel(game)}
-        </Text>
-      ))}
+      <Text bold>Your games:</Text>
+      {myGames?.length ? (
+        myGames.map((game) => (
+          <Text key={game.id}>
+            {figures.bullet} {gameItemLabel(game)}
+          </Text>
+        ))
+      ) : (
+        <Text dimColor>You have not uploaded any games yet</Text>
+      )}
+      {me?.admin && (
+        <>
+          <Text bold>All games:</Text>
+          {games?.map((game) => (
+            <Text key={game.id}>
+              {figures.bullet} {gameItemLabel(game)}
+            </Text>
+          ))}
+        </>
+      )}
     </Box>
   )
 }
