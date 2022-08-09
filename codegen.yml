@@ -1,5 +1,4 @@
-# todo: dynamically use production for CI, local for dev?
-schema: http://localhost:3000/dev/graphql
+schema: ${SCHEMA_PATH:https://tango-production.rune.ai/dev/graphql}
 overwrite: true
 generates:
   src/generated/schema.graphql:
