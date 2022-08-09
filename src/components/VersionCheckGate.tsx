@@ -8,6 +8,9 @@ import { packageJson } from "../lib/packageJson.js"
 import { Choose } from "./Choose.js"
 import { Step } from "./Step.js"
 
+const helpText =
+  "Run `yarn global add rune-games-cli` or `npm install -g rune-games-cli` to install the latest version"
+
 export function VersionCheckGate({ children }: { children: ReactNode }) {
   const [latestVersion, setLatestVersion] = useState<string | undefined>()
   const [loading, setLoading] = useState(true)
@@ -35,28 +38,23 @@ export function VersionCheckGate({ children }: { children: ReactNode }) {
         label={`This CLI is out of date (installed: ${
           packageJson.version
         }, latest: ${latestVersion}).${
-          diff !== "major" && " Do you want to proceed anyway?"
+          diff !== "major" ? " Do you want to proceed anyway?" : ""
         }`}
         view={
-          diff !== "major" && (
+          diff !== "major" ? (
             <Choose
               options={diff === "patch" ? ["Yes", "No"] : ["No", "Yes"]}
               onSubmit={(response) => setSkipped(response === "Yes")}
             />
+          ) : (
+            <Text color="red">{helpText}</Text>
           )
         }
       />
     )
   }
 
-  if (!skipped) {
-    return (
-      <Text>
-        Run `yarn global add rune-games-cli` or `npm install -g rune-games-cli`
-        to install the latest version
-      </Text>
-    )
-  }
+  if (!skipped) return <Text>{helpText}</Text>
 
   return <Box flexDirection="column">{children}</Box>
 }
