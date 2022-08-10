@@ -58,7 +58,7 @@ export function GameDirInputStep({
           ? "Validating game files"
           : validateGameResult?.valid
           ? `Using game files from ${gameDirFormatted}`
-          : validateGameError || !validateGameResult?.valid
+          : validateGameError || validateGameResult?.valid === false
           ? "Some issues detected in your game directory"
           : "Enter the game directory"
       }
