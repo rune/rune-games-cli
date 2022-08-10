@@ -3,13 +3,21 @@ import { Box, Text } from "ink"
 import React, { useEffect, ReactNode, useState } from "react"
 import semver, { ReleaseType } from "semver"
 
+import { getInstaller } from "../lib/getInstaller.js"
 import { packageJson } from "../lib/packageJson.js"
 
 import { Choose } from "./Choose.js"
 import { Step } from "./Step.js"
 
-const helpText =
-  "Run `yarn global add rune-games-cli` or `npm install -g rune-games-cli` to install the latest version"
+const installYarn = "`yarn global add rune-games-cli`"
+const installNpm = "`npm install -g rune-games-cli`"
+const helpText = `Run ${
+  getInstaller() === "yarn"
+    ? installYarn
+    : getInstaller() === "npm"
+    ? installNpm
+    : `${installNpm} or ${installYarn}`
+} to install the latest version`
 
 export function VersionCheckGate({ children }: { children: ReactNode }) {
   const [latestVersion, setLatestVersion] = useState<string | undefined>()
