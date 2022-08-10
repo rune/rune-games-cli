@@ -10,6 +10,7 @@ export const operations = {
     CreateGameVersion: 'CreateGameVersion',
     StartVerification: 'StartVerification',
     UpdateDevTeamById: 'UpdateDevTeamById',
+    UpdateGame: 'UpdateGame',
     ValidateGame: 'ValidateGame'
   }
 }

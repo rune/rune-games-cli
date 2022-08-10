@@ -18,6 +18,7 @@ gql`
       id
       handle
       email
+      admin
     }
   }
 `

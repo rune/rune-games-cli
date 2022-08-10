@@ -8,15 +8,14 @@ import { useMe } from "../../gql/useMe.js"
 export function ChooseGameStep({
   currentGameId,
   onComplete,
+  onlyExisting,
 }: {
   currentGameId: number | null | undefined
   onComplete: (gameId: number | null) => void
+  onlyExisting?: boolean
 }) {
   const { me } = useMe()
-  const { games, gamesLoading } = useGames({
-    skip: !me,
-    condition: { devTeamId: me?.id },
-  })
+  const { games, gamesLoading } = useGames({ skip: !me })
   const [gameId, setGameId] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
@@ -24,16 +23,25 @@ export function ChooseGameStep({
     if (currentGameId) setGameId(currentGameId)
   }, [currentGameId])
 
+  const myGames = useMemo(
+    () => games?.filter((game) => game.devTeam?.id === me?.id),
+    [games, me?.id]
+  )
+
   const items = useMemo(
     () => [
-      { label: "New game", value: null },
-      ...(games ?? []).map((game) => ({
-        label: gameItemLabel(game),
+      ...(onlyExisting ? [] : [{ label: "New game", value: null }]),
+      ...((me?.admin ? games : myGames) ?? []).map((game) => ({
+        label: gameItemLabel({ game, showDevHandle: me?.admin }),
         value: game.id,
       })),
     ],
-    [games]
+    [games, me?.admin, myGames, onlyExisting]
   )
+
+  useEffect(() => {
+    if (onlyExisting && items.length && !gameId) setGameId(items[0]!.value)
+  }, [gameId, items, onlyExisting])
 
   const onSubmit = useCallback(() => setSubmitted(true), [])
 
@@ -42,11 +50,11 @@ export function ChooseGameStep({
   }, [gameId, onComplete, submitted])
 
   const chosenGameLabel = useMemo(() => {
-    if (gameId === null) return "Will create a new game"
+    if (gameId === null) return "New Game selected"
 
-    return `Will upload a new version of ${
+    return `${
       games?.find((game) => game.id === gameId)?.title ?? "..."
-    }`
+    } game selected`
   }, [gameId, games])
 
   return (
@@ -57,7 +65,7 @@ export function ChooseGameStep({
           ? "Loading a list of games"
           : submitted
           ? chosenGameLabel
-          : "Choose a game to upload"
+          : "Select a game"
       }
       view={
         !gamesLoading &&
