@@ -1,5 +1,8 @@
+import figures from "figures"
 import { useInput, Box, Text } from "ink"
 import React, { useState } from "react"
+
+import { DisappearingHint } from "./DisappearingHint.js"
 
 export function Choose<T extends string>({
   options,
@@ -33,6 +36,12 @@ export function Choose<T extends string>({
           </Text>
         </Box>
       ))}
+
+      <Box paddingLeft={4}>
+        <DisappearingHint
+          text={`Use arrow keys ${figures.arrowLeft}${figures.arrowRight} to choose`}
+        />
+      </Box>
     </Box>
   )
 }
