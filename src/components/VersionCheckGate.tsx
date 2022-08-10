@@ -9,10 +9,14 @@ import { packageJson } from "../lib/packageJson.js"
 import { Choose } from "./Choose.js"
 import { Step } from "./Step.js"
 
+const installYarn = "`yarn global add rune-games-cli`"
+const installNpm = "`npm install -g rune-games-cli`"
 const helpText = `Run ${
   getInstaller() === "yarn"
-    ? "`yarn global add rune-games-cli`"
-    : "`npm install -g rune-games-cli`"
+    ? installYarn
+    : getInstaller() === "npm"
+    ? installNpm
+    : `${installYarn} or ${installNpm}`
 } to install the latest version`
 
 export function VersionCheckGate({ children }: { children: ReactNode }) {
