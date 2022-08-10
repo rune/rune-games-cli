@@ -26,7 +26,6 @@ gql`
       nodes {
         id
         title
-        devTeamId
         devTeam {
           id
           handle

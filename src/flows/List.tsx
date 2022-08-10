@@ -10,7 +10,7 @@ export function List() {
   const { games } = useGames({ skip: !me })
 
   const myGames = useMemo(
-    () => games?.filter((game) => game.devTeamId === me?.id),
+    () => games?.filter((game) => game.devTeam?.id === me?.id),
     [games, me?.id]
   )
 
