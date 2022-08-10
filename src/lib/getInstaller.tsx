@@ -9,18 +9,19 @@ export function getInstaller() {
     const installer = (() => {
       try {
         if (
-          execSync(`yarn global list`).toString().includes(`rune-games-cli`)
-        ) {
-          return "yarn"
-        }
-
-        if (
           execSync(`npm list -g rune-games-cli`)
             .toString()
             .includes(`rune-games-cli`)
         ) {
           return "npm"
         }
+
+        if (
+          execSync(`yarn global list`).toString().includes(`rune-games-cli`)
+        ) {
+          return "yarn"
+        }
+
         // eslint-disable-next-line no-empty
       } catch (e) {}
 
