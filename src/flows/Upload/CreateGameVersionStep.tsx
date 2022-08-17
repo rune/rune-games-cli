@@ -102,7 +102,7 @@ export function CreateGameVersionStep({
                 review. You can also test it here: {previewLink}
                 <Newline />
                 <Text color="yellow">
-                  (please do not share this link publicly)
+                  (only share this link with other devs who are helping playtest your game)
                 </Text>
               </>
             )
