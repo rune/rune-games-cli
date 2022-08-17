@@ -19,6 +19,7 @@ export function useCreateGameVersion() {
     createGameVersionLoading: result.loading,
     createGameVersionError: result.error,
     newGameVersionId: result.data?.createGameVersion.gameVersion.gameVersionId,
+    previewLink: result.data?.createGameVersion.previewLink,
   }
 }
 
@@ -35,6 +36,7 @@ gql`
         challengeSupport: $challengeSupport
       }
     ) {
+      previewLink
       gameVersion {
         gameId
         gameVersionId
