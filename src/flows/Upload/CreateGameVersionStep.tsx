@@ -99,7 +99,7 @@ export function CreateGameVersionStep({
             ) : (
               <>
                 Version #{newGameVersionId} uploaded successfully and is now in
-                review. You can also test it here: {previewLink}
+                review 🥳 You can test it here: {previewLink}
                 <Newline />
                 <Text color="yellow">
                   (only share this link with other devs who are helping playtest your game)
