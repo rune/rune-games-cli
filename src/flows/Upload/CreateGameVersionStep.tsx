@@ -1,5 +1,5 @@
 import AdmZip from "adm-zip"
-import { Box } from "ink"
+import { Box, Text, Newline } from "ink"
 import React, { useState, useEffect } from "react"
 
 import { Choose } from "../../components/Choose.js"
@@ -90,13 +90,22 @@ export function CreateGameVersionStep({
               : "success"
           }
           label={
-            createGameVersionLoading
-              ? "Uploading a new game version"
-              : createGameVersionError
-              ? formatApolloError(createGameVersionError, {
-                  default: "Something went wrong",
-                })
-              : `Version #${newGameVersionId} uploaded successfully and is now in review. You can also test it here: ${previewLink}`
+            createGameVersionLoading ? (
+              "Uploading a new game version"
+            ) : createGameVersionError ? (
+              formatApolloError(createGameVersionError, {
+                default: "Something went wrong",
+              })
+            ) : (
+              <>
+                Version #{newGameVersionId} uploaded successfully and is now in
+                review. You can also test it here: {previewLink}
+                <Newline />
+                <Text color="yellow">
+                  (please do not share this link publicly)
+                </Text>
+              </>
+            )
           }
         />
       )}

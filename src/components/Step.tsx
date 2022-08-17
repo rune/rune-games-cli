@@ -14,7 +14,7 @@ export function Step({
   view,
 }: {
   status: StepStatus
-  label: string | ((status: StepStatus) => string)
+  label: ReactNode | ((status: StepStatus) => ReactNode)
   view?: ReactNode | ((status: StepStatus) => ReactNode)
 }) {
   return (
