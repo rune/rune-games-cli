@@ -10,6 +10,7 @@ type CheckVerificationPayload {
 
 input CreateGameInput {
   clientMutationId: String
+  description: String
   logo: Upload
   title: String!
 }
@@ -150,6 +151,7 @@ type Game {
   """(Denormalized) Total number of comments ."""
   commentCount: Int!
   createdAt: Datetime
+  description: String
 
   """Reads a single `DevTeam` that is related to this `Game`."""
   devTeam: DevTeam
@@ -586,6 +588,7 @@ type UpdateDevTeamPayload {
 
 input UpdateGameInput {
   clientMutationId: String
+  description: String
   gameId: Int!
   logo: Upload
   title: String
