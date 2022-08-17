@@ -15,6 +15,8 @@ export function UpdateGameStep({ gameId }: { gameId: number }) {
   const { game } = useGame(gameId)
   const [title, setTitle] = useState("")
   const [titleSubmitted, setTitleSubmitted] = useState(false)
+  const [description, setDescription] = useState("")
+  const [descriptionSubmitted, setDescriptionSubmitted] = useState(false)
   const [logoPath, setLogoPath] = useState("")
   const [logoPathSubmitted, setLogoPathSubmitted] = useState(false)
   const { updateGame, updateGameLoading, updateGameError, updatedGame } =
@@ -24,29 +26,47 @@ export function UpdateGameStep({ gameId }: { gameId: number }) {
     if (title) setTitleSubmitted(true)
   }, [title])
 
+  const onSubmitDescription = useCallback(() => {
+    setDescriptionSubmitted(true)
+  }, [])
+
   const onSubmitLogoPath = useCallback(() => {
     setLogoPathSubmitted(true)
   }, [])
 
   useEffect(() => {
-    if (titleSubmitted && logoPathSubmitted) {
+    if (titleSubmitted && descriptionSubmitted && logoPathSubmitted) {
       updateGame({
         gameId,
         title,
+        description,
         ...(logoPath && { logo: prepareFileUpload(logoPath) }),
       })
     }
-  }, [gameId, logoPath, logoPathSubmitted, title, titleSubmitted, updateGame])
+  }, [
+    description,
+    descriptionSubmitted,
+    gameId,
+    logoPath,
+    logoPathSubmitted,
+    title,
+    titleSubmitted,
+    updateGame,
+  ])
 
   useEffect(() => {
     if (updateGameError) {
       setTitleSubmitted(false)
+      setDescriptionSubmitted(false)
       setLogoPathSubmitted(false)
     }
   }, [updateGameError])
 
   useEffect(() => {
-    if (game) setTitle(game.title)
+    if (game) {
+      setTitle(game.title)
+      if (game.description) setDescription(game.description)
+    }
   }, [game])
 
   return (
@@ -55,7 +75,7 @@ export function UpdateGameStep({ gameId }: { gameId: number }) {
         status={titleSubmitted ? "success" : "userInput"}
         label={
           titleSubmitted
-            ? `Will update the title to ${title}`
+            ? `Will set the title to ${title}`
             : "Enter the updated game title"
         }
         view={
@@ -70,6 +90,28 @@ export function UpdateGameStep({ gameId }: { gameId: number }) {
         }
       />
       {titleSubmitted && (
+        <Step
+          status={descriptionSubmitted ? "success" : "userInput"}
+          label={
+            descriptionSubmitted
+              ? description
+                ? "Will set the description"
+                : "Will not change the description"
+              : "Enter the updated game title"
+          }
+          view={
+            !descriptionSubmitted && (
+              <TextInput
+                placeholder="My cool game"
+                value={description}
+                onChange={setDescription}
+                onSubmit={onSubmitDescription}
+              />
+            )
+          }
+        />
+      )}
+      {descriptionSubmitted && (
         <Step
           status={logoPathSubmitted ? "success" : "userInput"}
           label={

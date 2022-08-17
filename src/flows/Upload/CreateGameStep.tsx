@@ -17,6 +17,8 @@ export function CreateGameStep({
 }) {
   const [title, setTitle] = useState("")
   const [titleSubmitted, setTitleSubmitted] = useState(false)
+  const [description, setDescription] = useState("")
+  const [descriptionSubmitted, setDescriptionSubmitted] = useState(false)
   const [logoPath, setLogoPath] = useState("")
   const [logoPathSubmitted, setLogoPathSubmitted] = useState(false)
   const { createGame, createGameLoading, createGameError, createdGameId } =
@@ -26,22 +28,36 @@ export function CreateGameStep({
     if (title) setTitleSubmitted(true)
   }, [title])
 
+  const onSubmitDescription = useCallback(() => {
+    setDescriptionSubmitted(true)
+  }, [])
+
   const onSubmitLogoPath = useCallback(() => {
     setLogoPathSubmitted(true)
   }, [])
 
   useEffect(() => {
-    if (titleSubmitted && logoPathSubmitted) {
+    if (titleSubmitted && descriptionSubmitted && logoPathSubmitted) {
       createGame({
         title,
+        description,
         ...(logoPath && { logo: prepareFileUpload(logoPath) }),
       })
     }
-  }, [createGame, logoPath, logoPathSubmitted, title, titleSubmitted])
+  }, [
+    createGame,
+    description,
+    descriptionSubmitted,
+    logoPath,
+    logoPathSubmitted,
+    title,
+    titleSubmitted,
+  ])
 
   useEffect(() => {
     if (createGameError) {
       setTitleSubmitted(false)
+      setDescriptionSubmitted(false)
       setLogoPathSubmitted(false)
     }
   }, [createGameError])
@@ -71,6 +87,28 @@ export function CreateGameStep({
         }
       />
       {titleSubmitted && (
+        <Step
+          status={descriptionSubmitted ? "success" : "userInput"}
+          label={
+            descriptionSubmitted
+              ? description
+                ? "Description provided"
+                : "No description"
+              : "Enter new game description"
+          }
+          view={
+            !descriptionSubmitted && (
+              <TextInput
+                placeholder="My game description"
+                value={description}
+                onChange={setDescription}
+                onSubmit={onSubmitDescription}
+              />
+            )
+          }
+        />
+      )}
+      {descriptionSubmitted && (
         <Step
           status={logoPathSubmitted ? "success" : "userInput"}
           label={

@@ -19,6 +19,7 @@ gql`
     gameById(id: $id) {
       id
       title
+      description
       createdAt
       gameVersions(orderBy: [PRIMARY_KEY_DESC]) {
         nodes {
