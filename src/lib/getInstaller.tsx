@@ -15,13 +15,15 @@ export function getInstaller() {
         ) {
           return "npm"
         }
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
 
+      try {
         if (
           execSync(`yarn global list`).toString().includes(`rune-games-cli`)
         ) {
           return "yarn"
         }
-
         // eslint-disable-next-line no-empty
       } catch (e) {}
 
