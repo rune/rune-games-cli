@@ -97,7 +97,7 @@ export function UpdateGameStep({ gameId }: { gameId: number }) {
               ? description
                 ? "Will set the description"
                 : "Will not change the description"
-              : "Enter the updated game title"
+              : "Enter the updated game description"
           }
           view={
             !descriptionSubmitted && (

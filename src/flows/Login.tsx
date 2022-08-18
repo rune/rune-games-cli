@@ -183,7 +183,7 @@ export function Login() {
                   <Text color="red">
                     {formatApolloError(updateDevTeamByIdError, {
                       'violates check constraint "dev_team_handle_check"':
-                        "Invalid input, try a different handle",
+                        "Invalid input, handles can contain only lowercase letters, numbers, and underscores/dot/hyphens (no spaces)",
                       'violates unique constraint "dev_team_handle_key"':
                         "This handle is already taken, please choose another",
                       default: "Something went wrong",
@@ -193,7 +193,7 @@ export function Login() {
                 <Box>
                   <Text>Handle: </Text>
                   <TextInput
-                    placeholder="coolDev"
+                    placeholder="cool-dev"
                     value={newHandle}
                     onChange={setNewHandle}
                     onSubmit={submitNewHandle}
