@@ -75,7 +75,7 @@ export function CreateGameStep({
             "[tango][CREATE_GAME_FAILED_TITLE_TAKEN]":
               "This game title is already taken, try something else",
             "[tango][CREATE_GAME_FAILED_TITLE_INVALID]":
-              "This game title is invalid, try something else",
+              "This game title is invalid, it has to be between 5 and 25 characters, and only letters, numbers, and spaces are allowed",
             "Input buffer contains unsupported image format":
               "Not an image file",
             default: `Something went wrong`,
