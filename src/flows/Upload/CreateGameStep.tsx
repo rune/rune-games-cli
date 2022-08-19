@@ -68,6 +68,20 @@ export function CreateGameStep({
 
   return (
     <Box flexDirection="column">
+      {createGameError && !createGameLoading && (
+        <Step
+          status="error"
+          label={formatApolloError(createGameError, {
+            "[tango][CREATE_GAME_FAILED_TITLE_TAKEN]":
+              "This game title is already taken, try something else",
+            "[tango][CREATE_GAME_FAILED_TITLE_INVALID]":
+              "This game title is invalid, try something else",
+            "Input buffer contains unsupported image format":
+              "Not an image file",
+            default: `Something went wrong`,
+          })}
+        />
+      )}
       <Step
         status={titleSubmitted ? "success" : "userInput"}
         label={
@@ -130,24 +144,7 @@ export function CreateGameStep({
           }
         />
       )}
-      {(createGameLoading || createGameError) && (
-        <Step
-          status={createGameLoading ? "waiting" : "error"}
-          label={
-            createGameError
-              ? formatApolloError(createGameError, {
-                  "[tango][CREATE_GAME_FAILED_TITLE_TAKEN]":
-                    "This game title is already taken, try something else",
-                  "[tango][CREATE_GAME_FAILED_TITLE_INVALID]":
-                    "This game title is invalid, try something else",
-                  "Input buffer contains unsupported image format":
-                    "Not an image file",
-                  default: `Something went wrong`,
-                })
-              : "Creating the game"
-          }
-        />
-      )}
+      {createGameLoading && <Step status="waiting" label="Creating the game" />}
     </Box>
   )
 }
