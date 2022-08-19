@@ -1,3 +1,4 @@
+import figures from "figures"
 import { Box, Text } from "ink"
 import TextInputImport from "ink-text-input"
 import path from "path"
@@ -43,49 +44,59 @@ export function GameDirInputStep({
   }, [gameDir, onComplete, validateGameResult?.valid])
 
   return (
-    <Step
-      status={
-        validateGameLoading
-          ? "waiting"
-          : validateGameError || validateGameResult?.errors.length
-          ? "error"
-          : validateGameResult?.valid
-          ? "success"
-          : "userInput"
-      }
-      label={
-        validateGameLoading
-          ? "Validating game files"
-          : validateGameResult?.valid
-          ? `Using game files from ${gameDirFormatted}`
-          : validateGameError || validateGameResult?.valid === false
-          ? "Some issues detected in your game directory"
-          : "Enter the game directory"
-      }
-      view={(status) => (
-        <Box flexDirection="column">
-          {validateGameError ? (
-            <Text color="red">Something went wrong</Text>
-          ) : (
-            validateGameResult?.errors.map((error, i) => (
-              <Text key={i} color="red">
-                {error}
-              </Text>
-            ))
-          )}
-          {(status === "userInput" || status === "error") && (
-            <Box>
-              <Text>Game directory: </Text>
-              <TextInput
-                placeholder="/path/to/game"
-                value={gameDir}
-                onChange={setGameDir}
-                onSubmit={onSubmitGameDir}
-              />
+    <>
+      {!!validateGameResult?.errors.length && (
+        <Step
+          status="error"
+          label="Some issues detected with your game"
+          view={
+            <Box flexDirection="column">
+              {validateGameResult?.errors.map((error, i) => (
+                <Text key={i} color="red">
+                  {figures.line} {error}
+                </Text>
+              ))}
             </Box>
-          )}
-        </Box>
+          }
+        />
       )}
-    />
+      <Step
+        status={
+          validateGameLoading
+            ? "waiting"
+            : validateGameError
+            ? "error"
+            : validateGameResult?.valid
+            ? "success"
+            : "userInput"
+        }
+        label={
+          validateGameLoading
+            ? "Validating game files"
+            : validateGameResult?.valid
+            ? `Using game files from ${gameDirFormatted}`
+            : validateGameError
+            ? "Something went wrong"
+            : validateGameResult?.valid === false
+            ? "Update your game to fix these issues 😄"
+            : "Enter the game directory"
+        }
+        view={(status) => (
+          <Box flexDirection="column">
+            {(status === "userInput" || status === "error") && (
+              <Box>
+                <Text>Game directory: </Text>
+                <TextInput
+                  placeholder="/path/to/game"
+                  value={gameDir}
+                  onChange={setGameDir}
+                  onSubmit={onSubmitGameDir}
+                />
+              </Box>
+            )}
+          </Box>
+        )}
+      />
+    </>
   )
 }
