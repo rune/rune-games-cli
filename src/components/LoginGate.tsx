@@ -1,8 +1,10 @@
-import { Text, Box } from "ink"
+import { Box } from "ink"
 import React, { ReactNode } from "react"
 
 import { Login } from "../flows/Login.js"
 import { useMe } from "../gql/useMe.js"
+
+import { Step } from "./Step.js"
 
 export function LoginGate({ children }: { children: ReactNode }) {
   const { me } = useMe()
@@ -11,12 +13,11 @@ export function LoginGate({ children }: { children: ReactNode }) {
 
   return (
     <Box flexDirection="column">
+      <Step
+        status="success"
+        label={`Logged in as \`${me.handle}\` (${me.email})`}
+      />
       {children}
-      <Box paddingTop={1}>
-        <Text dimColor>
-          Logged in as `{me.handle}` ({me.email})
-        </Text>
-      </Box>
     </Box>
   )
 }
