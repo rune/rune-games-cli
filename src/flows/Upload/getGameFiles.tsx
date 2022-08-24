@@ -9,7 +9,6 @@ export function getGameFiles(gameDir: string) {
         // double backward slashes on Windows
         process.platform === "win32" ? gameDir.replace(/\\/g, "/") : gameDir
       }/**/*`,
-
       {
         nodir: true,
         // excluding files and directories that start with .
