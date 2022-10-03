@@ -1,8 +1,8 @@
-import { Text, Box, Spacer, useInput } from "ink"
+import { Text, Box, Spacer } from "ink"
 import { UncontrolledTextInput } from "ink-text-input"
 import path from "path"
 import qrcode from "qrcode-terminal"
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 
 import { cli } from "../../lib/cli.js"
 import { packageJson } from "../../lib/packageJson.js"
@@ -53,11 +53,9 @@ export function Start() {
     [gamePathOrUrl, gameType]
   )
 
-  useInput((input) => {
-    if (input === "c" && appUrls.ip) {
-      qrcode.generate(appUrls.ip, { small: true }, setQrCodeText)
-    }
-  })
+  useEffect(() => {
+    if (appUrls.ip) qrcode.generate(appUrls.ip, { small: true }, setQrCodeText)
+  }, [appUrls.ip])
 
   if (!gamePathOrUrlValid) {
     return (
@@ -100,15 +98,9 @@ export function Start() {
               <Text bold color="green">
                 Test on your phone
               </Text>
-              : {appUrls.ip} (same network only
-              {qrCodeText ? null : (
-                <>
-                  , <Text color="yellow">press `c` to show QR code</Text>
-                </>
-              )}
-              )
+              : {appUrls.ip} (or scan the QR code below, same network only)
             </Text>
-            {!!qrCodeText && <Text>{qrCodeText}</Text>}
+            <Text>{qrCodeText}</Text>
           </>
         )}
         <Text>
