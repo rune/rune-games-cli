@@ -31,6 +31,8 @@ export function UpdateAll() {
           ? "Updating all games. This may take a while. Do not close the app"
           : updateAllGamesError
           ? formatApolloError(updateAllGamesError, {
+              "[tango][UPDATE_ALL_GAMES_FAILED_SOME_GAMES_IN_REVIEW]":
+                "Cannot update all games while some games are in review",
               default: updateAllGamesError.message,
             })
           : "Finished updating all games"
