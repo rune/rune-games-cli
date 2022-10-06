@@ -28,7 +28,7 @@ export function UpdateAll() {
       }
       label={
         updateAllGamesLoading
-          ? "Updating all games. This may take a while. Do not close the app"
+          ? "Updating all games. This may take a while. Do not close the terminal!"
           : updateAllGamesError
           ? formatApolloError(updateAllGamesError, {
               "[tango][UPDATE_ALL_GAMES_FAILED_SOME_GAMES_IN_REVIEW]":
