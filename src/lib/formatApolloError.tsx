@@ -8,7 +8,7 @@ export function formatApolloError(
     if (error.message.includes(key)) return messages[key] as string
   }
 
-  return process.env.STAGE === "local"
-    ? [messages.default, `Error details: ${JSON.stringify(error)}`].join("\n")
-    : messages.default
+  return (process.env.STAGE ?? "production") === "production"
+    ? messages.default
+    : [messages.default, `Error details: ${JSON.stringify(error)}`].join("\n")
 }
