@@ -42,7 +42,6 @@ interface ValidationError {
 interface ValidationResult {
   valid: boolean
   errors: ValidationError[]
-  indexHtml?: FileInfo
 }
 
 export async function validateGameFiles(
@@ -203,6 +202,5 @@ export async function validateGameFiles(
   return {
     valid: errors.length === 0,
     errors,
-    indexHtml,
   }
 }
