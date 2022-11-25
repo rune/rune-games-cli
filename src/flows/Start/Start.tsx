@@ -94,42 +94,44 @@ export function Start() {
   if (showValidationErrors) {
     return (
       <Box>
-        <Box
-          flexDirection="column"
-          borderStyle="round"
-          borderColor="yellow"
-          paddingX={1}
-        >
-          <Text bold>Game directory: {fullGamePathOrUrl}</Text>
-          <Text color="yellow" bold>
-            Some issues found during game files validation:
-          </Text>
-          {validationResult?.errors.map((error, i) => (
-            <Box key={i} paddingLeft={1} flexDirection="column">
-              <Text color="red">
-                {figures.line} {error.message}
-              </Text>
-              {!!error.lintErrors?.length && (
-                <Box paddingLeft={1} flexDirection="column">
-                  {error.lintErrors.map((lintError, i) => (
-                    <Box key={i} flexDirection="column">
-                      <Text color="red">
-                        {lintError.message} ({lintError.ruleId})
-                      </Text>
-                      {logicJsFile?.content && (
-                        <Box paddingLeft={1}>
-                          {renderErrorCodeLine({
-                            code: logicJsFile.content,
-                            ...lintError,
-                          })}
-                        </Box>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          ))}
+        <Box flexDirection="column">
+          <Box
+            flexDirection="column"
+            borderStyle="round"
+            borderColor="yellow"
+            paddingX={1}
+          >
+            <Text bold>Game directory: {fullGamePathOrUrl}</Text>
+            <Text color="yellow" bold>
+              Some issues found during game files validation:
+            </Text>
+            {validationResult?.errors.map((error, i) => (
+              <Box key={i} paddingLeft={1} flexDirection="column">
+                <Text color="red">
+                  {figures.line} {error.message}
+                </Text>
+                {!!error.lintErrors?.length && (
+                  <Box paddingLeft={1} flexDirection="column">
+                    {error.lintErrors.map((lintError, i) => (
+                      <Box key={i} flexDirection="column">
+                        <Text color="red">
+                          {lintError.message} ({lintError.ruleId})
+                        </Text>
+                        {logicJsFile?.content && (
+                          <Box paddingLeft={1}>
+                            {renderErrorCodeLine({
+                              code: logicJsFile.content,
+                              ...lintError,
+                            })}
+                          </Box>
+                        )}
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </Box>
           <Text>Do you still want to proceed? (Y/N)</Text>
         </Box>
         <Spacer />
