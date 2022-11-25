@@ -36,17 +36,13 @@ interface FileInfo {
 
 interface ValidationError {
   message: string
-}
-
-interface ValidationLintError extends ValidationError {
-  context: LintMessage
+  lintErrors?: LintMessage[]
 }
 
 interface ValidationResult {
   valid: boolean
-  errors: string[]
-  richErrors: (ValidationError | ValidationLintError)[]
-  indexHtml: FileInfo | null | undefined
+  errors: ValidationError[]
+  indexHtml?: FileInfo
 }
 
 export async function validateGameFiles(
@@ -55,14 +51,16 @@ export async function validateGameFiles(
   const { sdkUrlStart, sdkVersionRegex, minSdkVersion, maxFiles, maxSizeMb } =
     validationOptions
 
-  const errors: (string | [string, LintMessage[]])[] = []
+  const errors: ValidationError[] = []
 
-  if (files.length > maxFiles) errors.push(`Too many files (>${maxFiles})`)
+  if (files.length > maxFiles) {
+    errors.push({ message: `Too many files (>${maxFiles})` })
+  }
 
   const totalSize = files.reduce((acc, file) => acc + file.size, 0)
 
   if (totalSize > maxSizeMb * 1e6) {
-    errors.push(`Game size must be less than ${maxSizeMb}MB`)
+    errors.push({ message: `Game size must be less than ${maxSizeMb}MB` })
   }
 
   const indexHtml = files.find(
@@ -79,7 +77,7 @@ export async function validateGameFiles(
     if (indexHtml.content) {
       try {
         if (!valid(indexHtml.content)) {
-          errors.push("index.html is not valid HTML")
+          errors.push({ message: "index.html is not valid HTML" })
         } else {
           const parsedIndexHtml = parse(indexHtml.content)
           const scripts = parsedIndexHtml.getElementsByTagName("script")
@@ -102,9 +100,9 @@ export async function validateGameFiles(
 
               if (logicScript) {
                 if (scripts.indexOf(logicScript) !== 1) {
-                  errors.push(
-                    "logic.js must be the second script in index.html"
-                  )
+                  errors.push({
+                    message: "logic.js must be the second script in index.html",
+                  })
                 }
 
                 if (logicJs) {
@@ -115,46 +113,57 @@ export async function validateGameFiles(
                         const result = results.at(0)
 
                         if (result) {
-                          errors.push([
-                            "logic.js contains invalid code",
-                            result.messages,
-                          ])
+                          errors.push({
+                            message: "logic.js contains invalid code",
+                            lintErrors: result.messages,
+                          })
                         } else {
-                          errors.push("failed to lint logic.js")
+                          errors.push({ message: "failed to lint logic.js" })
                         }
                       })
                       .catch(() => {
-                        errors.push("failed to lint logic.js")
+                        errors.push({ message: "failed to lint logic.js" })
                       })
                   } else {
-                    errors.push(
-                      "logic.js content has not been provided for validation"
-                    )
+                    errors.push({
+                      message:
+                        "logic.js content has not been provided for validation",
+                    })
                   }
                 } else {
-                  errors.push("logic.js must be included in the game files")
+                  errors.push({
+                    message: "logic.js must be included in the game files",
+                  })
                 }
               } else {
-                errors.push("logic.js file is not included in index.html")
+                errors.push({
+                  message: "logic.js file is not included in index.html",
+                })
               }
 
               if (clientScript) {
                 if (scripts.indexOf(clientScript) !== 2) {
-                  errors.push(
-                    "client.js must be the third script in index.html"
-                  )
+                  errors.push({
+                    message: "client.js must be the third script in index.html",
+                  })
                 }
 
                 if (!clientJs) {
-                  errors.push("client.js must be included in the game files")
+                  errors.push({
+                    message: "client.js must be included in the game files",
+                  })
                 }
               } else {
-                errors.push("client.js file is not included in index.html")
+                errors.push({
+                  message: "client.js file is not included in index.html",
+                })
               }
             }
 
             if (scripts.indexOf(sdkScript) !== 0) {
-              errors.push("Rune SDK must be the first script in index.html")
+              errors.push({
+                message: "Rune SDK must be the first script in index.html",
+              })
             }
 
             const sdkVersion = sdkScript
@@ -169,32 +178,31 @@ export async function validateGameFiles(
               minSdkVersionCoerced &&
               semver.lt(sdkVersionCoerced, minSdkVersionCoerced)
             ) {
-              errors.push(
-                `Rune SDK is below minimum version (included ${sdkVersion}, min ${minSdkVersion})`
-              )
+              errors.push({
+                message: `Rune SDK is below minimum version (included ${sdkVersion}, min ${minSdkVersion})`,
+              })
             }
           } else {
-            errors.push("Game index.html must include Rune SDK script")
+            errors.push({
+              message: "Game index.html must include Rune SDK script",
+            })
           }
         }
       } catch (e) {
-        errors.push("index.html is not valid HTML")
+        errors.push({ message: "index.html is not valid HTML" })
       }
     } else {
-      errors.push("index.html content has not been provided for validation")
+      errors.push({
+        message: "index.html content has not been provided for validation",
+      })
     }
   } else {
-    errors.push("Game must include index.html")
+    errors.push({ message: "Game must include index.html" })
   }
 
   return {
     valid: errors.length === 0,
-    errors: errors.map((error) => (Array.isArray(error) ? error[0] : error)),
-    richErrors: errors.map((error) =>
-      typeof error === "string"
-        ? { message: error }
-        : { message: error[0], context: error[1] }
-    ),
+    errors,
     indexHtml,
   }
 }
