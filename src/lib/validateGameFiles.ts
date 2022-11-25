@@ -2,6 +2,8 @@ import { ESLint, Linter } from "eslint"
 import { parse, valid } from "node-html-parser"
 import semver from "semver"
 
+import { FileInfo } from "./getGameFiles.js"
+
 import LintMessage = Linter.LintMessage
 
 export const validationOptions = {
@@ -28,18 +30,12 @@ const eslint = new ESLint({
   },
 })
 
-interface FileInfo {
-  content?: string | null
-  path: string
-  size: number
-}
-
-interface ValidationError {
+export interface ValidationError {
   message: string
   lintErrors?: LintMessage[]
 }
 
-interface ValidationResult {
+export interface ValidationResult {
   valid: boolean
   errors: ValidationError[]
 }
@@ -112,10 +108,12 @@ export async function validateGameFiles(
                         const result = results.at(0)
 
                         if (result) {
-                          errors.push({
-                            message: "logic.js contains invalid code",
-                            lintErrors: result.messages,
-                          })
+                          if (result.messages.length > 0) {
+                            errors.push({
+                              message: "logic.js contains invalid code",
+                              lintErrors: result.messages,
+                            })
+                          }
                         } else {
                           errors.push({ message: "failed to lint logic.js" })
                         }

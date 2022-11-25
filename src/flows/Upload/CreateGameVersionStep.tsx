@@ -8,8 +8,7 @@ import { Step } from "../../components/Step.js"
 import { useCreateGameVersion } from "../../gql/useCreateGameVersion.js"
 import { useGame } from "../../gql/useGame.js"
 import { formatApolloError } from "../../lib/formatApolloError.js"
-
-import { getGameFiles } from "./getGameFiles.js"
+import { getGameFiles } from "../../lib/getGameFiles.js"
 
 export function CreateGameVersionStep({
   gameId,
@@ -38,22 +37,23 @@ export function CreateGameVersionStep({
 
   useEffect(() => {
     if (typeof challengeSupport === "boolean") {
-      const zip = new AdmZip()
-      const gameFiles = getGameFiles(gameDir)
+      getGameFiles(gameDir).then((gameFiles) => {
+        const zip = new AdmZip()
 
-      gameFiles.forEach((file) => {
-        const fileDir = path.dirname(path.relative(gameDir, file.path))
-        zip.addLocalFile(file.path, fileDir === "." ? "" : fileDir)
-      })
+        gameFiles.forEach((file) => {
+          const fileDir = path.dirname(path.relative(gameDir, file.path))
+          zip.addLocalFile(file.path, fileDir === "." ? "" : fileDir)
+        })
 
-      createGameVersion({
-        gameId,
-        challengeSupport,
-        content: {
-          name: "content.zip",
-          content: zip.toBuffer(),
-          type: "application/zip",
-        },
+        createGameVersion({
+          gameId,
+          challengeSupport,
+          content: {
+            name: "content.zip",
+            content: zip.toBuffer(),
+            type: "application/zip",
+          },
+        })
       })
     }
   }, [challengeSupport, createGameVersion, gameDir, gameId])

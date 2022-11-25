@@ -7,8 +7,7 @@ import React, { useState, useMemo, useCallback, useEffect } from "react"
 import { Step } from "../../components/Step.js"
 import { useValidateGame } from "../../gql/useValidateGame.js"
 import { cli } from "../../lib/cli.js"
-
-import { getGameFiles } from "./getGameFiles.js"
+import { getGameFiles } from "../../lib/getGameFiles.js"
 
 // @ts-ignore
 const TextInput = TextInputImport.default as typeof TextInputImport
@@ -36,7 +35,7 @@ export function GameDirInputStep({
   } = useValidateGame()
 
   const onSubmitGameDir = useCallback(() => {
-    validateGame(getGameFiles(gameDir))
+    getGameFiles(gameDir).then(validateGame)
   }, [gameDir, validateGame])
 
   useEffect(() => {
