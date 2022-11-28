@@ -16,6 +16,7 @@ export const validationOptions = {
 
 const eslint = new ESLint({
   useEslintrc: false,
+  allowInlineConfig: false,
   baseConfig: {
     root: true,
     env: {
