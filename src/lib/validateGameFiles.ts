@@ -65,9 +65,6 @@ export async function validateGameFiles(
   const logicJs = files.find(
     (file) => file.path === "logic.js" || file.path.endsWith("/logic.js")
   )
-  const clientJs = files.find(
-    (file) => file.path === "client.js" || file.path.endsWith("/client.js")
-  )
 
   if (indexHtml) {
     if (indexHtml.content) {
@@ -87,11 +84,6 @@ export async function validateGameFiles(
                 (script) =>
                   script.getAttribute("src") === "logic.js" ||
                   script.getAttribute("src")?.endsWith("/logic.js")
-              )
-              const clientScript = scripts.find(
-                (script) =>
-                  script.getAttribute("src") === "client.js" ||
-                  script.getAttribute("src")?.endsWith("/client.js")
               )
 
               if (logicScript) {
@@ -136,24 +128,6 @@ export async function validateGameFiles(
               } else {
                 errors.push({
                   message: "logic.js file is not included in index.html",
-                })
-              }
-
-              if (clientScript) {
-                if (scripts.indexOf(clientScript) !== 2) {
-                  errors.push({
-                    message: "client.js must be the third script in index.html",
-                  })
-                }
-
-                if (!clientJs) {
-                  errors.push({
-                    message: "client.js must be included in the game files",
-                  })
-                }
-              } else {
-                errors.push({
-                  message: "client.js file is not included in index.html",
                 })
               }
             }
