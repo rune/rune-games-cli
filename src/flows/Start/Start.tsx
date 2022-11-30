@@ -62,6 +62,7 @@ export function Start() {
         : gameType === "path" && gameServer
         ? `http://localhost:${gameServer.port}`
         : undefined,
+    multiplayer: validationResult?.multiplayer,
   })
 
   const appUrls = getLocalUrls(appServer?.port)

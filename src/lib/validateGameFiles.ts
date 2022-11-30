@@ -39,6 +39,7 @@ export interface ValidationError {
 export interface ValidationResult {
   valid: boolean
   errors: ValidationError[]
+  multiplayer: boolean
 }
 
 export async function validateGameFiles(
@@ -66,6 +67,8 @@ export async function validateGameFiles(
     (file) => file.path === "logic.js" || file.path.endsWith("/logic.js")
   )
 
+  let multiplayer = false
+
   if (indexHtml) {
     if (indexHtml.content) {
       try {
@@ -80,6 +83,8 @@ export async function validateGameFiles(
 
           if (sdkScript) {
             if (sdkScript.getAttribute("src")?.endsWith("/multiplayer.js")) {
+              multiplayer = true
+
               const logicScript = scripts.find(
                 (script) =>
                   script.getAttribute("src") === "logic.js" ||
@@ -175,5 +180,6 @@ export async function validateGameFiles(
   return {
     valid: errors.length === 0,
     errors,
+    multiplayer,
   }
 }

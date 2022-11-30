@@ -12,7 +12,13 @@ import { storage } from "../../lib/storage/storage.js"
 const appDir = path.resolve(rootPath, "app")
 const preferredPort = 3000
 
-export function useAppServer({ gameUrl }: { gameUrl?: string }) {
+export function useAppServer({
+  gameUrl,
+  multiplayer,
+}: {
+  gameUrl?: string
+  multiplayer?: boolean
+}) {
   const [port, setPort] = useState<number | null>(null)
 
   useEffect(() => {
@@ -26,6 +32,7 @@ export function useAppServer({ gameUrl }: { gameUrl?: string }) {
           res.json({
             cliVersion: packageJson.version,
             gameUrl,
+            multiplayer,
           })
         })
 
@@ -39,7 +46,7 @@ export function useAppServer({ gameUrl }: { gameUrl?: string }) {
         server.listen(portToUse, () => setPort(getServerPort(server)))
       }
     )
-  }, [gameUrl, port])
+  }, [gameUrl, multiplayer, port])
 
   useEffect(() => {
     if (port && port !== preferredPort) storage.set("lastRandomAppPort", port)
