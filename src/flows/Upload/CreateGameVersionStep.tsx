@@ -13,9 +13,11 @@ import { getGameFiles } from "../../lib/getGameFiles.js"
 export function CreateGameVersionStep({
   gameId,
   gameDir,
+  multiplayer,
 }: {
   gameId: number
   gameDir: string
+  multiplayer: boolean
 }) {
   const { game, gameLoading } = useGame(gameId)
   const {
@@ -36,7 +38,7 @@ export function CreateGameVersionStep({
   }, [game?.gameVersions.nodes])
 
   useEffect(() => {
-    if (typeof challengeSupport === "boolean") {
+    if (typeof challengeSupport === "boolean" || multiplayer) {
       getGameFiles(gameDir).then((gameFiles) => {
         const zip = new AdmZip()
 
@@ -56,38 +58,40 @@ export function CreateGameVersionStep({
         })
       })
     }
-  }, [challengeSupport, createGameVersion, gameDir, gameId])
+  }, [challengeSupport, createGameVersion, gameDir, gameId, multiplayer])
 
   return (
     <Box flexDirection="column">
-      <Step
-        status={
-          gameLoading
-            ? "waiting"
-            : typeof challengeSupport === "boolean"
-            ? "success"
-            : "userInput"
-        }
-        label={
-          gameLoading
-            ? "Checking daily challenge support"
-            : typeof challengeSupport === "boolean"
-            ? `This game ${
-                challengeSupport ? "supports" : "does not support"
-              } daily challenges`
-            : "Does this game support daily challenges?"
-        }
-        view={
-          !gameLoading &&
-          challengeSupport === undefined && (
-            <Choose
-              options={["No", "Yes"]}
-              onSubmit={(response) => setChallengeSupport(response === "Yes")}
-            />
-          )
-        }
-      />
-      {typeof challengeSupport === "boolean" && (
+      {!multiplayer && (
+        <Step
+          status={
+            gameLoading
+              ? "waiting"
+              : typeof challengeSupport === "boolean"
+              ? "success"
+              : "userInput"
+          }
+          label={
+            gameLoading
+              ? "Checking daily challenge support"
+              : typeof challengeSupport === "boolean"
+              ? `This game ${
+                  challengeSupport ? "supports" : "does not support"
+                } daily challenges`
+              : "Does this game support daily challenges?"
+          }
+          view={
+            !gameLoading &&
+            challengeSupport === undefined && (
+              <Choose
+                options={["No", "Yes"]}
+                onSubmit={(response) => setChallengeSupport(response === "Yes")}
+              />
+            )
+          }
+        />
+      )}
+      {(typeof challengeSupport === "boolean" || multiplayer) && (
         <Step
           status={
             createGameVersionLoading
