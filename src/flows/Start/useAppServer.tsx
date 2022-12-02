@@ -8,6 +8,7 @@ import { getServerPort } from "../../lib/getServerPort.js"
 import { packageJson } from "../../lib/packageJson.js"
 import { rootPath } from "../../lib/rootPath.js"
 import { storage } from "../../lib/storage/storage.js"
+import { ValidationResult } from "../../lib/validateGameFiles"
 
 const appDir = path.resolve(rootPath, "app")
 const preferredPort = 3000
@@ -17,7 +18,7 @@ export function useAppServer({
   multiplayer,
 }: {
   gameUrl?: string
-  multiplayer?: boolean
+  multiplayer: ValidationResult["multiplayer"]
 }) {
   const [port, setPort] = useState<number | null>(null)
 
@@ -32,7 +33,11 @@ export function useAppServer({
           res.json({
             cliVersion: packageJson.version,
             gameUrl,
-            multiplayer,
+            multiplayer: !!multiplayer,
+            multiplayerMinPlayers: multiplayer?.minPlayers,
+            multiplayerMaxPlayers: multiplayer?.maxPlayers,
+            multiplayerHandlesPlayerJoined: multiplayer?.handlesPlayerJoined,
+            multiplayerHandlesPlayerLeft: multiplayer?.handlesPlayerLeft,
           })
         })
 

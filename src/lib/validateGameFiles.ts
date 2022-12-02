@@ -9,6 +9,12 @@ import LintMessage = Linter.LintMessage
 export const validationOptions = {
   sdkUrlStart: "https://cdn.jsdelivr.net/npm/rune-games-sdk",
   sdkVersionRegex: /rune-games-sdk@(\d\.\d(\.\d)?)/,
+  metadataRegexes: {
+    minPlayers: /minPlayers\s*:\s*?([0-9])/,
+    maxPlayers: /maxPlayers\s*:\s*?([0-9])/,
+    playerJoined: /playerJoined\s*[:(]/,
+    playerLeft: /playerLeft\s*[:(]/,
+  },
   minSdkVersion: "2.4.0",
   maxFiles: 1000,
   maxSizeMb: 25,
@@ -39,7 +45,14 @@ export interface ValidationError {
 export interface ValidationResult {
   valid: boolean
   errors: ValidationError[]
-  multiplayer: boolean
+  multiplayer:
+    | {
+        minPlayers?: number
+        maxPlayers?: number
+        handlesPlayerJoined?: boolean
+        handlesPlayerLeft?: boolean
+      }
+    | undefined
 }
 
 export async function validateGameFiles(
@@ -67,7 +80,7 @@ export async function validateGameFiles(
     (file) => file.path === "logic.js" || file.path.endsWith("/logic.js")
   )
 
-  let multiplayer = false
+  let multiplayer: ValidationResult["multiplayer"]
 
   if (indexHtml) {
     if (indexHtml.content) {
@@ -83,7 +96,7 @@ export async function validateGameFiles(
 
           if (sdkScript) {
             if (sdkScript.getAttribute("src")?.endsWith("/multiplayer.js")) {
-              multiplayer = true
+              multiplayer = {}
 
               const logicScript = scripts.find(
                 (script) =>
@@ -119,6 +132,75 @@ export async function validateGameFiles(
                       .catch(() => {
                         errors.push({ message: "failed to lint logic.js" })
                       })
+
+                    const minPlayers = logicJs.content
+                      .match(validationOptions.metadataRegexes.minPlayers)
+                      ?.at(1)
+
+                    if (!minPlayers || isNaN(parseInt(minPlayers))) {
+                      errors.push({
+                        message: "logic.js: minPlayers not found or is invalid",
+                      })
+                    } else {
+                      multiplayer.minPlayers = parseInt(minPlayers)
+                    }
+
+                    const maxPlayers = logicJs.content
+                      .match(validationOptions.metadataRegexes.maxPlayers)
+                      ?.at(1)
+
+                    if (!maxPlayers || isNaN(parseInt(maxPlayers))) {
+                      errors.push({
+                        message: "logic.js: maxPlayers not found or is invalid",
+                      })
+                    } else {
+                      multiplayer.maxPlayers = parseInt(maxPlayers)
+                    }
+
+                    if (
+                      validationOptions.metadataRegexes.playerJoined.test(
+                        logicJs.content
+                      )
+                    ) {
+                      multiplayer.handlesPlayerJoined = true
+                    }
+
+                    if (
+                      validationOptions.metadataRegexes.playerLeft.test(
+                        logicJs.content
+                      )
+                    ) {
+                      multiplayer.handlesPlayerLeft = true
+                    }
+
+                    if (
+                      multiplayer.minPlayers &&
+                      (multiplayer.minPlayers < 1 || multiplayer.minPlayers > 4)
+                    ) {
+                      errors.push({
+                        message: "logic.js: minPlayers must be between 1 and 4",
+                      })
+                    }
+
+                    if (
+                      multiplayer.maxPlayers &&
+                      (multiplayer.maxPlayers < 1 || multiplayer.maxPlayers > 4)
+                    ) {
+                      errors.push({
+                        message: "logic.js: maxPlayers must be between 1 and 4",
+                      })
+                    }
+
+                    if (
+                      multiplayer.maxPlayers &&
+                      multiplayer.minPlayers &&
+                      multiplayer.maxPlayers < multiplayer.minPlayers
+                    ) {
+                      errors.push({
+                        message:
+                          "logic.js: maxPlayers must be greater than or equal to minPlayers",
+                      })
+                    }
                   } else {
                     errors.push({
                       message:
