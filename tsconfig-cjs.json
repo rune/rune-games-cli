@@ -6,5 +6,9 @@
     "outDir": "cjs/lib",
     "declaration": true
   },
-  "include": ["src/lib/validateGameFiles.ts", "src/lib/getGameFiles.tsx"]
+  "include": [
+    "src/lib/validateGameFiles.ts",
+    "src/lib/extractMultiplayerMetadata.ts",
+    "src/lib/getGameFiles.tsx"
+  ]
 }

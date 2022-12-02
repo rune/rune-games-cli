@@ -2,7 +2,7 @@ import { ESLint, Linter } from "eslint"
 import { parse, valid } from "node-html-parser"
 import semver from "semver"
 
-import { extractMultiplayerMetadata } from "./extractMultiplayerMetadata"
+import { extractMultiplayerMetadata } from "./extractMultiplayerMetadata.js"
 import { FileInfo } from "./getGameFiles.js"
 
 import LintMessage = Linter.LintMessage
@@ -10,12 +10,6 @@ import LintMessage = Linter.LintMessage
 export const validationOptions = {
   sdkUrlStart: "https://cdn.jsdelivr.net/npm/rune-games-sdk",
   sdkVersionRegex: /rune-games-sdk@(\d\.\d(\.\d)?)/,
-  metadataRegexes: {
-    minPlayers: /minPlayers\s*:\s*?([0-9])/,
-    maxPlayers: /maxPlayers\s*:\s*?([0-9])/,
-    playerJoined: /playerJoined\s*[:(]/,
-    playerLeft: /playerLeft\s*[:(]/,
-  },
   minSdkVersion: "2.4.0",
   maxFiles: 1000,
   maxSizeMb: 25,
