@@ -2,6 +2,7 @@ import { ESLint, Linter } from "eslint"
 import { parse, valid } from "node-html-parser"
 import semver from "semver"
 
+import { extractMultiplayerMetadata } from "./extractMultiplayerMetadata"
 import { FileInfo } from "./getGameFiles.js"
 
 import LintMessage = Linter.LintMessage
@@ -133,44 +134,24 @@ export async function validateGameFiles(
                         errors.push({ message: "failed to lint logic.js" })
                       })
 
-                    const minPlayers = logicJs.content
-                      .match(validationOptions.metadataRegexes.minPlayers)
-                      ?.at(1)
+                    multiplayer = extractMultiplayerMetadata(logicJs.content)
 
-                    if (!minPlayers || isNaN(parseInt(minPlayers))) {
+                    if (
+                      !multiplayer.minPlayers ||
+                      isNaN(multiplayer.minPlayers)
+                    ) {
                       errors.push({
                         message: "logic.js: minPlayers not found or is invalid",
                       })
-                    } else {
-                      multiplayer.minPlayers = parseInt(minPlayers)
                     }
 
-                    const maxPlayers = logicJs.content
-                      .match(validationOptions.metadataRegexes.maxPlayers)
-                      ?.at(1)
-
-                    if (!maxPlayers || isNaN(parseInt(maxPlayers))) {
+                    if (
+                      !multiplayer.maxPlayers ||
+                      isNaN(multiplayer.maxPlayers)
+                    ) {
                       errors.push({
                         message: "logic.js: maxPlayers not found or is invalid",
                       })
-                    } else {
-                      multiplayer.maxPlayers = parseInt(maxPlayers)
-                    }
-
-                    if (
-                      validationOptions.metadataRegexes.playerJoined.test(
-                        logicJs.content
-                      )
-                    ) {
-                      multiplayer.handlesPlayerJoined = true
-                    }
-
-                    if (
-                      validationOptions.metadataRegexes.playerLeft.test(
-                        logicJs.content
-                      )
-                    ) {
-                      multiplayer.handlesPlayerLeft = true
                     }
 
                     if (
