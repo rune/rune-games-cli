@@ -2640,6 +2640,11 @@ eslint-plugin-react@7.19.0:
     string.prototype.matchall "^4.0.2"
     xregexp "^4.3.0"
 
+eslint-plugin-rune@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-rune/-/eslint-plugin-rune-0.1.0.tgz#53d54d0d0bea510c3140ca11d959094ec578d656"
+  integrity sha512-Ycj1fTk6U13X5LrAim7t6bdoB9YQ7sxREUy3/LLL0eXYhg/+DDPhhM7wb6PN5R6CvMyonBY7Ug2um46aZNdtIg==
+
 eslint-scope@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.1.tgz#e786e59a66cb92b3f6c1fb0d508aab174848f48c"
