@@ -20,15 +20,7 @@ const eslint = new ESLint({
   allowInlineConfig: false,
   baseConfig: {
     root: true,
-    env: {
-      es6: true,
-    },
-    globals: {
-      Rune: true,
-    },
-    rules: {
-      "no-undef": "error",
-    },
+    extends: ["plugin:rune/logic"],
   },
 })
 
