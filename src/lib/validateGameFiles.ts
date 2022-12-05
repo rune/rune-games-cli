@@ -20,7 +20,7 @@ const eslint = new ESLint({
   allowInlineConfig: false,
   baseConfig: {
     root: true,
-    extends: ["plugin:rune"],
+    extends: ["plugin:rune/logic"],
   },
 })
 
