@@ -63,10 +63,9 @@ export async function validateGameFiles(
   const indexHtml = files.find(
     (file) => file.path === "index.html" || file.path.endsWith("/index.html")
   )
-  const logicJsFiles = files.filter(
+  const logicJs = files.find(
     (file) => file.path === "logic.js" || file.path.endsWith("/logic.js")
   )
-  const logicJs = logicJsFiles.at(0)
 
   let multiplayer: ValidationResult["multiplayer"]
 
@@ -86,22 +85,23 @@ export async function validateGameFiles(
             if (sdkScript.getAttribute("src")?.endsWith("/multiplayer.js")) {
               multiplayer = {}
 
-              const logicScript = scripts.find(
+              const logicScripts = scripts.filter(
                 (script) =>
                   script.getAttribute("src") === "logic.js" ||
                   script.getAttribute("src")?.endsWith("/logic.js")
               )
+              const logicScript = logicScripts.at(0)
 
               if (logicScript) {
-                if (scripts.indexOf(logicScript) !== 1) {
+                if (logicScripts.length > 1) {
                   errors.push({
-                    message: "logic.js must be the second script in index.html",
+                    message: "there can only be one logic.js script",
                   })
                 }
 
-                if (logicJsFiles.length > 1) {
+                if (scripts.indexOf(logicScript) !== 1) {
                   errors.push({
-                    message: "there should only be one logic.js file",
+                    message: "logic.js must be the second script in index.html",
                   })
                 }
 
