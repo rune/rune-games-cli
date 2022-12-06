@@ -34,10 +34,6 @@ export function useAppServer({
             cliVersion: packageJson.version,
             gameUrl,
             multiplayer: !!multiplayer,
-            multiplayerMinPlayers: multiplayer?.minPlayers,
-            multiplayerMaxPlayers: multiplayer?.maxPlayers,
-            multiplayerHandlesPlayerJoined: multiplayer?.handlesPlayerJoined,
-            multiplayerHandlesPlayerLeft: multiplayer?.handlesPlayerLeft,
           })
         })
 
