@@ -37,8 +37,12 @@ export function CreateGameVersionStep({
     }
   }, [game?.gameVersions.nodes])
 
+  const gameCanSupportChallenges = !multiplayer
+  const readyToUpload =
+    typeof challengeSupport === "boolean" || !gameCanSupportChallenges
+
   useEffect(() => {
-    if (typeof challengeSupport === "boolean" || multiplayer) {
+    if (readyToUpload) {
       getGameFiles(gameDir).then((gameFiles) => {
         const zip = new AdmZip()
 
@@ -58,11 +62,11 @@ export function CreateGameVersionStep({
         })
       })
     }
-  }, [challengeSupport, createGameVersion, gameDir, gameId, multiplayer])
+  }, [challengeSupport, createGameVersion, gameDir, gameId, readyToUpload])
 
   return (
     <Box flexDirection="column">
-      {!multiplayer && (
+      {gameCanSupportChallenges && (
         <Step
           status={
             gameLoading
@@ -91,7 +95,7 @@ export function CreateGameVersionStep({
           }
         />
       )}
-      {(typeof challengeSupport === "boolean" || multiplayer) && (
+      {readyToUpload && (
         <Step
           status={
             createGameVersionLoading
