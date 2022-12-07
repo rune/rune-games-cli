@@ -1,4 +1,3 @@
-import figures from "figures"
 import { Text, Box, Spacer, useInput } from "ink"
 import path from "path"
 import qrcode from "qrcode-terminal"
@@ -107,19 +106,19 @@ export function Start() {
               Some issues found during game files validation:
             </Text>
             {validationResult?.errors.map((error, i) => (
-              <Box key={i} paddingLeft={1} flexDirection="column">
+              <Box key={i} paddingLeft={0} flexDirection="column">
                 <Text color="red">
-                  {figures.line} {error.message}
+                  {i + 1}) {error.message}
                 </Text>
                 {!!error.lintErrors?.length && (
-                  <Box paddingLeft={1} flexDirection="column">
+                  <Box paddingLeft={2} flexDirection="column">
                     {error.lintErrors.map((lintError, i) => (
                       <Box key={i} flexDirection="column">
-                        <Text color="red">
-                          {lintError.message} ({lintError.ruleId})
+                        <Text>
+                          - {lintError.message} ({lintError.ruleId})
                         </Text>
                         {logicJsFile?.content && (
-                          <Box paddingLeft={1}>
+                          <Box paddingLeft={2}>
                             {renderErrorCodeLine({
                               code: logicJsFile.content,
                               ...lintError,
