@@ -1,6 +1,8 @@
 import { Text } from "ink"
 import React from "react"
 
+const spaceRegex = /^\s+/
+
 export function renderErrorCodeLine({
   code,
   line,
@@ -14,11 +16,16 @@ export function renderErrorCodeLine({
   endLine?: number
   endColumn?: number
 }) {
-  const content = code.split("\n").at(line - 1)
+  let content = code.split("\n").at(line - 1)
 
   if (!content) return null
 
   endColumn = endLine === line ? endColumn ?? column : content?.length
+
+  const spacesAtTheStart = content.match(spaceRegex)?.[0]?.length ?? 0
+  content = content.slice(spacesAtTheStart)
+  column -= spacesAtTheStart
+  endColumn -= spacesAtTheStart
 
   return (
     <Text color="cyan">
