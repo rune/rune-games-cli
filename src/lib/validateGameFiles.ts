@@ -1,5 +1,6 @@
 import { ESLint, Linter } from "eslint"
 import { parse, valid } from "node-html-parser"
+import path from "path"
 import semver from "semver"
 
 import { extractMultiplayerMetadata } from "./extractMultiplayerMetadata.js"
@@ -85,20 +86,13 @@ export async function validateGameFiles(
             if (sdkScript.getAttribute("src")?.endsWith("/multiplayer.js")) {
               multiplayer = {}
 
-              const logicScripts = scripts.filter(
+              const logicScript = scripts.find(
                 (script) =>
                   script.getAttribute("src") === "logic.js" ||
                   script.getAttribute("src")?.endsWith("/logic.js")
               )
-              const logicScript = logicScripts.at(0)
 
               if (logicScript) {
-                if (logicScripts.length > 1) {
-                  errors.push({
-                    message: "there can only be one logic.js script",
-                  })
-                }
-
                 if (scripts.indexOf(logicScript) !== 1) {
                   errors.push({
                     message: "logic.js must be the second script in index.html",
@@ -106,6 +100,15 @@ export async function validateGameFiles(
                 }
 
                 if (logicJs) {
+                  if (
+                    path.dirname(indexHtml.path) !== path.dirname(logicJs.path)
+                  ) {
+                    errors.push({
+                      message:
+                        "logic.js must be in the same directory as index.html",
+                    })
+                  }
+
                   if (logicJs.content) {
                     await eslint
                       .lintText(logicJs.content)
