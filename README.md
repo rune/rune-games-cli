@@ -46,6 +46,10 @@ challenge number.
 
 <img src="https://user-images.githubusercontent.com/7106681/166223264-81029004-c985-49e6-b486-1d134686354e.png" height="500" /> <img src="https://user-images.githubusercontent.com/7106681/166223386-1d04ba1d-bde7-40c8-a94b-b4d12b13249b.png" height="500" />
 
+Note that you must have TCP ports 3000 and 3001 open on your system's firewall,
+if you have a firewall enabled, to enable running the game from a mobile device
+on your local network.
+
 ### Upload your game
 
 ```sh
